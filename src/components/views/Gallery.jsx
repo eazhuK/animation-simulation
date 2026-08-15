@@ -1,23 +1,8 @@
-import { useState } from 'react'
 import { CATEGORIES } from '../../data/categories.js'
 import { ANIMATIONS } from '../../data/animations.js'
 import AnimationPreview from '../shared/AnimationPreview.jsx'
 
 export default function Gallery() {
-  const [favourites, setFavourites] = useState(() => new Set())
-
-  function toggleFavourite(id) {
-    setFavourites((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
-      return next
-    })
-  }
-
   return (
     <section className="view">
       <header className="view__header">
@@ -44,8 +29,7 @@ export default function Gallery() {
                 <AnimationPreview
                   key={animation.id}
                   animation={animation}
-                  isFavourite={favourites.has(animation.id)}
-                  onToggleFavourite={() => toggleFavourite(animation.id)}
+                  context={`Gallery → ${category.label}`}
                 />
               ))}
             </div>

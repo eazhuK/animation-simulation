@@ -8,3 +8,7 @@
 [2026-08-15T16:09:47+01:00] Step 04 (04_page-loading-effects.md): starting
 [2026-08-15T16:15:43+01:00] Step 04 (04_page-loading-effects.md): completed in 5m 56s (rc=0)
 [2026-08-15T16:15:47+01:00] Step 05 (05_client-selection-flow.md): starting
+[2026-08-15T16:23:31+01:00] Step 05 (05_client-selection-flow.md): completed in 7m 43s (rc=0)
+[2026-08-15T16:23:37+01:00] Step 06 (06_polish-docs-cleanup.md): starting
+[2026-08-15T16:30:04+01:00] Step 06 (06_polish-docs-cleanup.md): completed in 6m 27s (rc=0)
+[2026-08-15T16:30:39+01:00] Run finished with exit code 0

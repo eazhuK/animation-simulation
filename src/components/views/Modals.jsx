@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AnimationLabel from '../shared/AnimationLabel.jsx'
 
 const MODAL_TYPES = [
@@ -65,6 +65,15 @@ export default function Modals() {
     setActiveModalId(null)
   }
 
+  useEffect(() => {
+    if (!activeModal) return undefined
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') closeModal()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [activeModal])
+
   function showToast() {
     setToastPhase('enter')
     setTimeout(() => setToastPhase('exit'), TOAST_VISIBLE_MS)
@@ -102,7 +111,13 @@ export default function Modals() {
             Show Toast
           </button>
         </div>
-        {activeModal && <AnimationLabel animationIds={activeModal.animationIds} />}
+        {activeModal && (
+          <AnimationLabel animationIds={activeModal.animationIds} context="Modals → Modal & popup styles" />
+        )}
+        <AnimationLabel
+          animationIds={['toast-slide-in', 'slide-out-right', 'toast-progress-dismiss']}
+          context="Modals → Toast notification"
+        />
       </section>
 
       {activeModal && (
@@ -110,10 +125,13 @@ export default function Modals() {
           <div
             className={`demo-modal-panel demo-modal-panel--${activeModal.layout} ${activeModal.panelClassName}`}
             onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="demo-modal-title"
           >
             {activeModal.layout === 'alert' ? (
               <>
-                <h4>Delete this item?</h4>
+                <h4 id="demo-modal-title">Delete this item?</h4>
                 <p>This action can’t be undone. The item will be permanently removed.</p>
                 <div className="demo-modal__actions">
                   <button type="button" className="demo-btn" onClick={closeModal}>
@@ -126,7 +144,7 @@ export default function Modals() {
               </>
             ) : (
               <>
-                <h4>{activeModal.label}</h4>
+                <h4 id="demo-modal-title">{activeModal.label}</h4>
                 <p>
                   This panel demonstrates the “{activeModal.label}” entrance animation applied to a
                   real modal/drawer surface.
@@ -143,7 +161,11 @@ export default function Modals() {
       )}
 
       {toastPhase && (
-        <div className={`demo-toast ${toastPhase === 'enter' ? 'anim-toast-slide-in' : 'anim-slide-out-right'}`}>
+        <div
+          className={`demo-toast ${toastPhase === 'enter' ? 'anim-toast-slide-in' : 'anim-slide-out-right'}`}
+          role="status"
+          aria-live="polite"
+        >
           <span>Changes saved successfully.</span>
           {toastPhase === 'enter' && (
             <span

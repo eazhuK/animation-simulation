@@ -6,9 +6,10 @@ entry — and "Current state" below — before finishing a phase.
 
 ## Current state
 
-- Repo status as of 2026-08-15: Phase 4 complete — Pages/Loaders demo sections wired to the
-  animation registry.
-- Next phase to run: **Phase 5** (`prompts/05_client-selection-flow.md`).
+- Repo status as of 2026-08-15: **Phase 6 complete — all 6 phases done.** The showcase is
+  feature-complete: 101 CSS-only animations across 18 categories, live on Gallery + six
+  component-demo views, with shared favourite/selection state and a polish/a11y/responsive pass
+  on top. No further phases are queued.
 - Stack: Vite + React, **JavaScript** (JSX, not TS) — matches the scaffold's default template.
 - Folder layout:
   - `src/main.jsx` — entry point, imports `src/styles/global.css`.
@@ -123,12 +124,76 @@ entry — and "Current state" below — before finishing a phase.
   - Verified with `npm run build` (clean) and a temporary Playwright smoke pass (installed
     `playwright-chromium` with `--no-save`, uninstalled after) exercising both views' controls;
     zero console errors.
-- For Phase 5: `favourites` is the only remaining `PlaceholderView`; reuse the existing favourite
-  checkbox state pattern already in `AnimationPreview` (currently local-only) as the basis for
-  persisted selection.
+- Phase 5 built:
+  - `src/context/SelectionContext.jsx` (new) — `SelectionProvider` + `useSelection()` hook, the
+    single source of truth for client selection. Holds two pieces of state, both persisted to
+    `localStorage`: `favourites` (a `Set` of animation ids, key
+    `ui-animation-catalogue:favourites`) and `usage` (a `Map<id, Set<contextString>>`, key
+    `ui-animation-catalogue:usage`) recording every "Section → demo block" context an animation
+    has actually been rendered in. `registerUsage(id, context)` is called from a `useEffect` in
+    the components below whenever they render with a `context` prop — no separate hand-maintained
+    usage-mapping data file, so it can't drift from what the views actually show.
+  - `src/main.jsx` wraps `<App />` in `<SelectionProvider>`.
+  - `AnimationPreview.jsx` (`src/components/shared/`) no longer takes `isFavourite`/
+    `onToggleFavourite` props — it reads/writes favourites via `useSelection()` directly, and
+    accepts an optional `context` prop to register usage. `Gallery.jsx` lost its local
+    `favourites` `useState` entirely and now passes `context={`Gallery → ${category.label}`}`.
+  - `AnimationLabel.jsx` (`src/components/shared/`) reworked: renders one row per animation entry
+    (name, suitability chips, and a ★/☆ favourite toggle button using `useSelection()`), and takes
+    an optional `context` string prop it forwards to `registerUsage`. This is what gives
+    Cards/Forms/Tables/Modals/Pages/Loaders a favourite control without touching those views'
+    demo logic — only added a `context="Section → demo block title"` prop to each existing
+    `<AnimationLabel>` call (one new always-visible label added in `Modals.jsx` for the toast
+    animations, which previously had no label at all).
+  - `src/components/views/Favourites.jsx` (new) — the "Selected Animations" summary view, now
+    routed from `App.jsx` for the `favourites` section (replacing the last `PlaceholderView`
+    usage). Lists every favourited animation (grouped implicitly by sort order, each showing its
+    category chip and the list of "Section → demo block" contexts it's been viewed in from the
+    shared `usage` map), a "Remove" button (unfavourite), and a full `AnimationPreview` per item
+    so replay/duration/delay/speed keep working from this view. A "Shareable summary" block
+    renders one line per `context: Animation Name` (matching the requirement doc's "Dashboard
+    cards: Staggered slide-up" style) in a `<pre>`, with a "Copy summary" button
+    (`navigator.clipboard`) and a "Print / save as PDF" button (`window.print()`, with a
+    `@media print` rule in `component-demos.css` hiding chrome/controls so only the summary
+    block prints).
+  - `PlaceholderView.jsx` and its `.placeholder-panel` CSS deleted — every section now has a real
+    view, so no placeholder is used anywhere.
+  - Verified with `npm run build` (clean) and a temporary Playwright smoke pass (installed
+    `playwright-chromium` with `--no-save`, uninstalled after): favouriting in Gallery and in a
+    Cards demo label share state (same id shows as favourited in both places), the Favourites view
+    lists the right count with correct per-context summary lines, state survives a full page
+    reload (localStorage), and duration slider / remove button still work from within Favourites.
+    Zero console errors.
 - Note: an earlier interrupted scaffold attempt left a stray empty `.git` folder at project root
   (no commits). Left in place — flagged to the user, not removed (destructive-op permission
   denied by the harness). Harmless either way; safe to `rm -rf .git` or `git init` fresh later.
+- Phase 6 built (polish/responsive/a11y pass, no new features):
+  - `src/styles/global.css` — removed one dead class (`.chip-row`, defined but never used); added
+    a global `:focus-visible` outline (all interactive elements), a `prefers-reduced-motion`
+    block (collapses all animation/transition durations + iteration counts, standard pattern),
+    and two responsive breakpoints (`860px`: sidebar becomes a horizontal scrollable top bar
+    instead of a fixed 260px side column; `480px`: tighter header/content padding, smaller
+    view-header heading).
+  - `src/styles/components/component-demos.css` — `.demo-table-wrap` now scrolls horizontally
+    (`overflow: auto` + `.demo-table { min-width: 480px }`) instead of clipping the Tables view on
+    narrow screens.
+  - `src/components/layout/Sidebar.jsx` — active nav link now gets `aria-current="page"`.
+  - `src/components/views/Modals.jsx` — modal panel gets `role="dialog"`/`aria-modal`/
+    `aria-labelledby`; Escape key closes the open modal (new `useEffect` keydown listener); toast
+    gets `role="status"`/`aria-live="polite"`.
+  - `src/components/views/Tables.jsx` — expandable rows are now keyboard-operable (`tabIndex=0`,
+    `role="button"`, `aria-expanded`, Enter/Space via `onKeyDown`); removed one unused function
+    parameter (`rowClassName`'s `index`) flagged by `oxlint`.
+  - Verified: `npx oxlint src` clean (only the pre-existing, expected fast-refresh warning on
+    `SelectionContext.jsx` remains — not a real issue), `npm run build` clean, and a temporary
+    Playwright smoke pass (installed `playwright-chromium` with `--no-save`, uninstalled after)
+    across mobile/tablet/desktop viewports on every section: no console errors, no horizontal
+    overflow, modal a11y (dialog role + Escape-to-close) confirmed, and reduced-motion mode
+    confirmed collapsing animation duration to ~0.
+  - Added project-root `README.md` (what the app is, `npm install`/`npm run dev`, a tour of all 8
+    views). No dead code beyond the one CSS class found — Phase 5 had already removed
+    `PlaceholderView`, and every one of the 101 registry entries' `cssClassName` values resolves
+    to a real CSS rule (checked programmatically), so nothing else to prune.
 
 ## Phase plan
 
@@ -186,10 +251,23 @@ everything else reused the existing 99-entry registry and Phase 2 CSS. `App.jsx`
 temporary Playwright smoke pass (uninstalled after) green with zero console errors. See "Current
 state" above for exact file list and new registry entries.
 
-### Phase 5 — pending
+### Phase 5 — done (2026-08-15)
 
-_Not yet run._
+Built the client selection flow: a `SelectionContext` (React context + `localStorage`) holding
+shared favourites and a per-animation usage map, so favouriting is consistent across Gallery and
+every component demo section. `AnimationPreview`/`AnimationLabel` now read/write this shared state
+instead of local component state, and each demo block passes a `context` label used to build the
+"which component(s) it's for" mapping. New `Favourites.jsx` view lists selected animations with
+full preview controls, per-context usage, and a copy-to-clipboard/print shareable summary. Removed
+the now-unused `PlaceholderView`. Build clean, temporary Playwright smoke pass (uninstalled after)
+green with zero console errors. See "Current state" above for exact file list and storage keys.
 
-### Phase 6 — pending
+### Phase 6 — done (2026-08-15)
 
-_Not yet run._
+Final polish pass: responsive breakpoints (sidebar collapses to a horizontal top bar under 860px,
+tighter padding under 480px, tables scroll horizontally instead of clipping), a global
+`:focus-visible` style, a `prefers-reduced-motion` block, modal dialog semantics + Escape-to-close
++ toast live region, keyboard-operable table row expansion, and one dead CSS class removed. Added
+project-root `README.md`. Build + lint clean, temporary Playwright pass (uninstalled after) green
+across mobile/tablet/desktop with zero console errors and no horizontal overflow. See "Current
+state" above for the exact file list. **All 6 phases are now complete.**

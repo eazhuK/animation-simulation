@@ -37,7 +37,10 @@ export default function Loaders() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Spinner &amp; dot loading</h3>
-          <AnimationLabel animationIds={['spinner-circle', 'spinner-dual-ring', 'spinner-dots']} />
+          <AnimationLabel
+            animationIds={['spinner-circle', 'spinner-dual-ring', 'spinner-dots']}
+            context="Loaders → Spinner & dot loading"
+          />
         </div>
         <div className="demo-controls">
           <button type="button" className="demo-btn demo-btn--primary" onClick={() => setLoopKey((k) => k + 1)}>
@@ -69,7 +72,7 @@ export default function Loaders() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Pulse loading</h3>
-          <AnimationLabel animationIds={['pulse-dot', 'pulse-ring']} />
+          <AnimationLabel animationIds={['pulse-dot', 'pulse-ring']} context="Loaders → Pulse loading" />
         </div>
         <div className="demo-loader-grid" key={`pulse-${loopKey}`}>
           <div className="demo-loader-tile">
@@ -89,7 +92,7 @@ export default function Loaders() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Skeleton &amp; shimmer loaders</h3>
-          <AnimationLabel animationId="skeleton-shimmer" />
+          <AnimationLabel animationId="skeleton-shimmer" context="Loaders → Skeleton & shimmer loaders" />
         </div>
         <p className="demo-block__note">
           The same shimmer sweep doubles as both the skeleton placeholder technique and the
@@ -111,7 +114,10 @@ export default function Loaders() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Progress indicators</h3>
-          <AnimationLabel animationIds={['progress-bar-indeterminate', 'circular-progress-spin']} />
+          <AnimationLabel
+            animationIds={['progress-bar-indeterminate', 'circular-progress-spin']}
+            context="Loaders → Progress indicators"
+          />
         </div>
         <div className="demo-progress-row">
           <div>
@@ -130,7 +136,7 @@ export default function Loaders() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Button loading state</h3>
-          <AnimationLabel animationId="button-loading-spin" />
+          <AnimationLabel animationId="button-loading-spin" context="Loaders → Button loading state" />
         </div>
         <div className="demo-controls">
           <button
@@ -148,7 +154,10 @@ export default function Loaders() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Full-page loading screen</h3>
-          <AnimationLabel animationIds={['spinner-dual-ring', 'progress-bar-indeterminate']} />
+          <AnimationLabel
+            animationIds={['spinner-dual-ring', 'progress-bar-indeterminate']}
+            context="Loaders → Full-page loading screen"
+          />
         </div>
         <p className="demo-block__note">
           Shown inside a contained preview frame — not an actual overlay across the whole app.

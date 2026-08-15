@@ -88,7 +88,7 @@ export default function Cards() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Layout &amp; entry direction</h3>
-          <AnimationLabel animationId={direction.animationId} />
+          <AnimationLabel animationId={direction.animationId} context="Cards → Layout & entry direction" />
         </div>
         <div className="demo-controls">
           <div className="demo-controls__group">
@@ -126,7 +126,7 @@ export default function Cards() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Staggered entry</h3>
-          <AnimationLabel animationId="stagger-card-grid" />
+          <AnimationLabel animationId="stagger-card-grid" context="Cards → Staggered entry" />
         </div>
         <div className="demo-controls">
           <button type="button" className="demo-btn demo-btn--primary" onClick={() => setStaggerKey((k) => k + 1)}>
@@ -145,7 +145,7 @@ export default function Cards() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Entrance effects</h3>
-          <AnimationLabel animationId={entranceEffect.animationId} />
+          <AnimationLabel animationId={entranceEffect.animationId} context="Cards → Entrance effects" />
         </div>
         <div className="demo-controls">
           <div className="demo-controls__group">
@@ -172,7 +172,10 @@ export default function Cards() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Four directions converge</h3>
-          <AnimationLabel animationIds={['slide-in-left', 'slide-in-right', 'slide-in-up', 'slide-in-down']} />
+          <AnimationLabel
+            animationIds={['slide-in-left', 'slide-in-right', 'slide-in-up', 'slide-in-down']}
+            context="Cards → Four directions converge"
+          />
         </div>
         <div className="demo-controls">
           <button type="button" className="demo-btn demo-btn--primary" onClick={() => setConvergeKey((k) => k + 1)}>
@@ -189,7 +192,10 @@ export default function Cards() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Hover interactions</h3>
-          <AnimationLabel animationIds={HOVER_EFFECTS.map((h) => h.animationId)} />
+          <AnimationLabel
+            animationIds={HOVER_EFFECTS.map((h) => h.animationId)}
+            context="Cards → Hover interactions"
+          />
         </div>
         <div className="demo-card-grid demo-card-grid--4">
           {HOVER_EFFECTS.map((hover, index) => (

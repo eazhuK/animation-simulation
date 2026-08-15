@@ -8,12 +8,18 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 6px;
   font-size: var(--font-size-xs);
   text-align: right;
 }
 
-.anim-label__names {
+.anim-label__entry {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.anim-label__name {
   font-weight: 600;
   color: var(--color-primary);
 }
@@ -23,6 +29,20 @@
   gap: 4px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.anim-label__fav {
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.anim-label__fav.is-active {
+  color: var(--color-primary);
 }
 
 .chip--tiny {
@@ -279,11 +299,12 @@ textarea.demo-field__input {
   position: relative;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  overflow: auto;
 }
 
 .demo-table {
   width: 100%;
+  min-width: 480px;
   border-collapse: collapse;
   font-size: var(--font-size-sm);
 }
@@ -725,4 +746,54 @@ textarea.demo-field__input {
 
 .demo-loading-screen__progress {
   width: 180px;
+}
+
+/* ---- Favourites / Selected Animations ------------------------------------ */
+
+.favourites-summary {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  color: var(--color-text);
+}
+
+.favourites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-lg);
+}
+
+.favourites-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.favourites-item__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2xs);
+}
+
+.favourites-item__usage {
+  list-style: none;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+@media print {
+  .sidebar,
+  .app-header,
+  .demo-controls,
+  .favourites-grid {
+    display: none !important;
+  }
 }

@@ -12,6 +12,7 @@ export default function Sidebar({ activeSection, onSelectSection }) {
             className={
               'sidebar__link' + (section.id === activeSection ? ' is-active' : '')
             }
+            aria-current={section.id === activeSection ? 'page' : undefined}
             onClick={() => onSelectSection(section.id)}
           >
             {section.label}

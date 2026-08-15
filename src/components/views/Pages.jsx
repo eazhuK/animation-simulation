@@ -63,7 +63,7 @@ export default function Pages() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Page transition style</h3>
-          <AnimationLabel animationId={transition.animationId} />
+          <AnimationLabel animationId={transition.animationId} context="Pages → Page transition style" />
         </div>
         <div className="demo-controls">
           <div className="demo-controls__group">
@@ -90,7 +90,7 @@ export default function Pages() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Content stagger load</h3>
-          <AnimationLabel animationId="page-stagger-load" />
+          <AnimationLabel animationId="page-stagger-load" context="Pages → Content stagger load" />
         </div>
         <div className="demo-controls">
           <button type="button" className="demo-btn demo-btn--primary" onClick={() => setContentKey((k) => k + 1)}>
@@ -113,7 +113,7 @@ export default function Pages() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Dashboard widgets sequential load</h3>
-          <AnimationLabel animationId="stagger-card-grid" />
+          <AnimationLabel animationId="stagger-card-grid" context="Pages → Dashboard widgets sequential load" />
         </div>
         <div className="demo-controls">
           <button type="button" className="demo-btn demo-btn--primary" onClick={() => setWidgetKey((k) => k + 1)}>
@@ -137,7 +137,7 @@ export default function Pages() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Hero section entrance</h3>
-          <AnimationLabel animationId="hero-entrance" />
+          <AnimationLabel animationId="hero-entrance" context="Pages → Hero section entrance" />
         </div>
         <div className="demo-controls">
           <button type="button" className="demo-btn demo-btn--primary" onClick={() => setHeroKey((k) => k + 1)}>
@@ -163,7 +163,10 @@ export default function Pages() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Skeleton-to-content transition</h3>
-          <AnimationLabel animationIds={['skeleton-shimmer', 'skeleton-to-content']} />
+          <AnimationLabel
+            animationIds={['skeleton-shimmer', 'skeleton-to-content']}
+            context="Pages → Skeleton-to-content transition"
+          />
         </div>
         <div className="demo-controls">
           <button type="button" className="demo-btn demo-btn--primary" onClick={reloadWithSkeleton} disabled={!contentLoaded}>

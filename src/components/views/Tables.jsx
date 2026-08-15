@@ -68,7 +68,7 @@ export default function Tables() {
     }, 1200)
   }
 
-  const rowClassName = (index) =>
+  const rowClassName = () =>
     entryStyle.id === 'stagger' ? 'anim-row-stagger-reveal' : `anim-${entryStyle.id === 'slide' ? 'row-slide-in' : 'row-fade-in'}`
 
   const rowStyle = (index) =>
@@ -87,7 +87,10 @@ export default function Tables() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Row reveal &amp; new-row highlight</h3>
-          <AnimationLabel animationIds={[entryStyle.animationId, 'row-highlight-new']} />
+          <AnimationLabel
+            animationIds={[entryStyle.animationId, 'row-highlight-new', 'row-expand', 'spinner-circle', 'skeleton-shimmer']}
+            context="Tables → Row reveal & new-row highlight"
+          />
         </div>
         <div className="demo-controls">
           <div className="demo-controls__group">
@@ -152,7 +155,15 @@ export default function Tables() {
                           .filter(Boolean)
                           .join(' ')}
                         style={rowStyle(index)}
+                        tabIndex={0}
+                        role="button"
+                        aria-expanded={expandedId === row.id}
                         onClick={() => setExpandedId((prev) => (prev === row.id ? null : row.id))}
+                        onKeyDown={(event) => {
+                          if (event.key !== 'Enter' && event.key !== ' ') return
+                          event.preventDefault()
+                          setExpandedId((prev) => (prev === row.id ? null : row.id))
+                        }}
                       >
                         <td>{row.name}</td>
                         <td>{row.role}</td>

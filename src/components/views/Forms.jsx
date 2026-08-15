@@ -67,7 +67,10 @@ export default function Forms() {
       <section className="demo-block">
         <div className="demo-block__head">
           <h3>Container entry &amp; field reveal</h3>
-          <AnimationLabel animationIds={[entryEffect.id, 'field-reveal']} />
+          <AnimationLabel
+            animationIds={[entryEffect.id, 'field-reveal', 'label-float', 'input-focus-glow', 'field-error-shake', 'field-success-check', 'submit-button-loading', 'button-success-morph']}
+            context="Forms → Container entry & field reveal"
+          />
         </div>
         <div className="demo-controls">
           <div className="demo-controls__group">

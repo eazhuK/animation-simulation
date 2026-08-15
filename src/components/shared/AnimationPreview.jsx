@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSelection } from '../../context/SelectionContext.jsx'
 
 const DURATION_MIN = 150
 const DURATION_MAX = 1500
@@ -14,14 +15,19 @@ const SPEED_STEP = 0.25
 
 const STAGGER_COUNT = 4
 
-export default function AnimationPreview({ animation, isFavourite, onToggleFavourite }) {
-  const { name, description, cssClassName, suitableFor, previewKind = 'enter' } = animation
+export default function AnimationPreview({ animation, context }) {
+  const { id, name, description, cssClassName, suitableFor, previewKind = 'enter' } = animation
+  const { isFavourite, toggleFavourite, registerUsage } = useSelection()
 
   const [durationMs, setDurationMs] = useState(500)
   const [delayMs, setDelayMs] = useState(0)
   const [speed, setSpeed] = useState(1)
   const [replayToken, setReplayToken] = useState(0)
   const [isPreviewing, setIsPreviewing] = useState(false)
+
+  useEffect(() => {
+    if (context) registerUsage(id, context)
+  }, [id, context, registerUsage])
 
   const effectiveDuration = Math.max(50, Math.round(durationMs / speed))
   const staggerStep = Math.max(30, Math.round(120 / speed))
@@ -54,7 +60,7 @@ export default function AnimationPreview({ animation, isFavourite, onToggleFavou
           <p className="anim-card__desc">{description}</p>
         </div>
         <label className="anim-card__fav">
-          <input type="checkbox" checked={isFavourite} onChange={onToggleFavourite} />
+          <input type="checkbox" checked={isFavourite(id)} onChange={() => toggleFavourite(id)} />
           <span>Favourite</span>
         </label>
       </header>
