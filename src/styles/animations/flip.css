@@ -1,0 +1,26 @@
+@keyframes anim-flip-in-horizontal-kf {
+  from { opacity: 0; transform: perspective(600px) rotateX(-90deg); }
+  to { opacity: 1; transform: perspective(600px) rotateX(0); }
+}
+@keyframes anim-flip-in-vertical-kf {
+  from { opacity: 0; transform: perspective(600px) rotateY(-90deg); }
+  to { opacity: 1; transform: perspective(600px) rotateY(0); }
+}
+@keyframes anim-flip-out-horizontal-kf {
+  from { opacity: 1; transform: perspective(600px) rotateX(0); }
+  to { opacity: 0; transform: perspective(600px) rotateX(90deg); }
+}
+@keyframes anim-flip-out-vertical-kf {
+  from { opacity: 1; transform: perspective(600px) rotateY(0); }
+  to { opacity: 0; transform: perspective(600px) rotateY(90deg); }
+}
+@keyframes anim-flip-card-3d-kf {
+  0% { opacity: 0; transform: perspective(800px) rotateY(-180deg); }
+  100% { opacity: 1; transform: perspective(800px) rotateY(0); }
+}
+
+.anim-flip-in-horizontal { animation-name: anim-flip-in-horizontal-kf; }
+.anim-flip-in-vertical { animation-name: anim-flip-in-vertical-kf; }
+.anim-flip-out-horizontal { animation-name: anim-flip-out-horizontal-kf; }
+.anim-flip-out-vertical { animation-name: anim-flip-out-vertical-kf; }
+.anim-flip-card-3d { animation-name: anim-flip-card-3d-kf; }

@@ -1,0 +1,27 @@
+@keyframes anim-reveal-left-to-right-kf {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes anim-reveal-top-to-bottom-kf {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes anim-mask-circle-reveal-kf {
+  from { clip-path: circle(0% at 50% 50%); }
+  to { clip-path: circle(75% at 50% 50%); }
+}
+@keyframes anim-clip-reveal-diagonal-kf {
+  from { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
+  to { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+}
+@keyframes anim-curtain-reveal-kf {
+  from { clip-path: inset(0 0 0 0); opacity: 0.4; }
+  50% { clip-path: inset(0 50% 0 0); }
+  to { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+
+.anim-reveal-left-to-right { animation-name: anim-reveal-left-to-right-kf; }
+.anim-reveal-top-to-bottom { animation-name: anim-reveal-top-to-bottom-kf; }
+.anim-mask-circle-reveal { animation-name: anim-mask-circle-reveal-kf; }
+.anim-clip-reveal-diagonal { animation-name: anim-clip-reveal-diagonal-kf; }
+.anim-curtain-reveal { animation-name: anim-curtain-reveal-kf; }

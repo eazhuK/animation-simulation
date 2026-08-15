@@ -1,0 +1,37 @@
+@keyframes anim-page-fade-kf {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes anim-page-slide-kf {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes anim-page-zoom-kf {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes anim-page-curtain-kf {
+  from { clip-path: inset(0 0 0 0); opacity: 0; }
+  1% { clip-path: inset(0 100% 0 0); opacity: 1; }
+  to { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+@keyframes anim-page-stagger-load-kf {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes anim-hero-entrance-kf {
+  from { opacity: 0; transform: translateY(28px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes anim-skeleton-to-content-kf {
+  from { opacity: 0; transform: scale(0.97); filter: blur(6px); }
+  to { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+.anim-page-fade { animation-name: anim-page-fade-kf; }
+.anim-page-slide { animation-name: anim-page-slide-kf; }
+.anim-page-zoom { animation-name: anim-page-zoom-kf; }
+.anim-page-curtain { animation-name: anim-page-curtain-kf; }
+.anim-page-stagger-load { animation-name: anim-page-stagger-load-kf; }
+.anim-hero-entrance { animation-name: anim-hero-entrance-kf; }
+.anim-skeleton-to-content { animation-name: anim-skeleton-to-content-kf; }

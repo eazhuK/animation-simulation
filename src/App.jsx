@@ -1,121 +1,57 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import Sidebar from './components/layout/Sidebar.jsx'
+import Gallery from './components/views/Gallery.jsx'
+import Cards from './components/views/Cards.jsx'
+import Forms from './components/views/Forms.jsx'
+import Tables from './components/views/Tables.jsx'
+import Modals from './components/views/Modals.jsx'
+import Pages from './components/views/Pages.jsx'
+import Loaders from './components/views/Loaders.jsx'
+import PlaceholderView from './components/views/PlaceholderView.jsx'
+import { SECTIONS, DEFAULT_SECTION_ID } from './data/sections.js'
+
+const VIEW_COMPONENTS = {
+  gallery: Gallery,
+  cards: Cards,
+  forms: Forms,
+  tables: Tables,
+  modals: Modals,
+  pages: Pages,
+  loaders: Loaders,
+}
+
+const PLACEHOLDER_COPY = {
+  favourites: {
+    title: 'Selected / Favourites',
+    description: 'Animations marked as favourites, ready to hand off to the dev team.',
+    note: 'Favourite/selection tracking arrives in Phase 5.',
+  },
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeSection, setActiveSection] = useState(DEFAULT_SECTION_ID)
+
+  const activeLabel =
+    SECTIONS.find((section) => section.id === activeSection)?.label ?? ''
+
+  const ActiveViewComponent = VIEW_COMPONENTS[activeSection]
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <div className="app-shell">
+      <Sidebar activeSection={activeSection} onSelectSection={setActiveSection} />
+      <div className="app-main">
+        <header className="app-header">
+          <h1>{activeLabel}</h1>
+        </header>
+        <main className="app-main__content">
+          {ActiveViewComponent ? (
+            <ActiveViewComponent />
+          ) : (
+            <PlaceholderView {...PLACEHOLDER_COPY[activeSection]} />
+          )}
+        </main>
+      </div>
+    </div>
   )
 }
 

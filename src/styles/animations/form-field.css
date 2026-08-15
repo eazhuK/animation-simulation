@@ -1,0 +1,50 @@
+@keyframes anim-field-reveal-kf {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes anim-field-error-shake-kf {
+  10%, 90% { transform: translateX(-4px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-7px); }
+  40%, 60% { transform: translateX(7px); }
+}
+@keyframes anim-field-success-check-kf {
+  0% { opacity: 0; transform: scale(0.6) rotate(-10deg); }
+  60% { opacity: 1; transform: scale(1.1) rotate(4deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes anim-submit-button-loading-kf {
+  to { transform: rotate(360deg); }
+}
+
+.anim-field-reveal { animation-name: anim-field-reveal-kf; }
+.anim-field-error-shake { animation-name: anim-field-error-shake-kf; }
+.anim-field-success-check { animation-name: anim-field-success-check-kf; }
+.anim-submit-button-loading {
+  animation-name: anim-submit-button-loading-kf;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  border-radius: 50%;
+  border: 3px solid var(--color-primary-soft);
+  border-top-color: var(--color-primary);
+}
+
+.anim-label-float {
+  transition-property: transform, color, font-size;
+  transform-origin: left top;
+}
+.anim-label-float:hover,
+.anim-label-float.is-previewing {
+  transform: translateY(-1.4rem) scale(0.85);
+  color: var(--color-primary);
+}
+
+.anim-input-focus-glow {
+  transition-property: box-shadow, border-color;
+  border: 1px solid var(--color-border);
+}
+.anim-input-focus-glow:hover,
+.anim-input-focus-glow.is-previewing {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+}

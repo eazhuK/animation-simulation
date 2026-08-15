@@ -1,0 +1,19 @@
+/**
+ * Shared plumbing consumed by every .anim-* class across the category files in this folder.
+ * Individual classes only set `animation-name` (+ any custom properties a keyframe needs) or,
+ * for interactive/transition-driven effects, `transition-property` + their :hover/.is-previewing
+ * state. Duration/delay/easing always come from these three custom properties so
+ * AnimationPreview can drive every animation the same way:
+ *   --anim-duration  (default 500ms)
+ *   --anim-delay     (default 0ms)
+ *   --anim-easing    (default var(--ease-standard))
+ */
+[class*='anim-'] {
+  animation-duration: var(--anim-duration, 500ms);
+  animation-delay: var(--anim-delay, 0ms);
+  animation-timing-function: var(--anim-easing, var(--ease-standard));
+  animation-fill-mode: both;
+  transition-duration: var(--anim-duration, 300ms);
+  transition-delay: var(--anim-delay, 0ms);
+  transition-timing-function: var(--anim-easing, var(--ease-standard));
+}

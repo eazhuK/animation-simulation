@@ -1,0 +1,33 @@
+@keyframes anim-modal-fade-backdrop-kf {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes anim-modal-scale-in-kf {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes anim-drawer-slide-in-kf {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes anim-bottom-sheet-rise-kf {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes anim-modal-flip-in-kf {
+  from { opacity: 0; transform: perspective(800px) rotateX(-40deg); }
+  to { opacity: 1; transform: perspective(800px) rotateX(0); }
+}
+@keyframes anim-modal-bounce-in-kf {
+  0% { opacity: 0; transform: scale(0.5); }
+  60% { opacity: 1; transform: scale(1.05); }
+  80% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+.anim-modal-fade-backdrop { animation-name: anim-modal-fade-backdrop-kf; }
+.anim-modal-scale-in { animation-name: anim-modal-scale-in-kf; }
+.anim-drawer-slide-in { animation-name: anim-drawer-slide-in-kf; }
+.anim-bottom-sheet-rise { animation-name: anim-bottom-sheet-rise-kf; }
+.anim-modal-flip-in { animation-name: anim-modal-flip-in-kf; }
+.anim-modal-bounce-in { animation-name: anim-modal-bounce-in-kf; }

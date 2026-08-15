@@ -1,0 +1,18 @@
+@keyframes anim-rotate-in-kf {
+  from { opacity: 0; transform: rotate(var(--r-from, -20deg)) scale(0.9); }
+  to { opacity: 1; transform: rotate(0) scale(1); }
+}
+@keyframes anim-rotate-out-kf {
+  from { opacity: 1; transform: rotate(0) scale(1); }
+  to { opacity: 0; transform: rotate(var(--r-from, 20deg)) scale(0.9); }
+}
+@keyframes anim-spin-loop-kf {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.anim-rotate-in { animation-name: anim-rotate-in-kf; }
+.anim-rotate-in-cw { --r-from: -90deg; animation-name: anim-rotate-in-kf; }
+.anim-rotate-in-ccw { --r-from: 90deg; animation-name: anim-rotate-in-kf; }
+.anim-rotate-out { animation-name: anim-rotate-out-kf; }
+.anim-spin-loop { animation-name: anim-spin-loop-kf; animation-timing-function: linear; animation-iteration-count: infinite; }

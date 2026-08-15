@@ -1,0 +1,17 @@
+@keyframes anim-slide-in-kf {
+  from { opacity: 0; transform: translate(var(--fx, 0), var(--fy, 0)); }
+  to { opacity: 1; transform: translate(0, 0); }
+}
+@keyframes anim-slide-out-kf {
+  from { opacity: 1; transform: translate(0, 0); }
+  to { opacity: 0; transform: translate(var(--fx, 0), var(--fy, 0)); }
+}
+
+.anim-slide-in-left { --fx: -100%; animation-name: anim-slide-in-kf; }
+.anim-slide-in-right { --fx: 100%; animation-name: anim-slide-in-kf; }
+.anim-slide-in-up { --fy: 60px; animation-name: anim-slide-in-kf; }
+.anim-slide-in-down { --fy: -60px; animation-name: anim-slide-in-kf; }
+.anim-slide-out-left { --fx: -100%; animation-name: anim-slide-out-kf; }
+.anim-slide-out-right { --fx: 100%; animation-name: anim-slide-out-kf; }
+.anim-slide-out-up { --fy: -60px; animation-name: anim-slide-out-kf; }
+.anim-slide-out-down { --fy: 60px; animation-name: anim-slide-out-kf; }

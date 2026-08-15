@@ -1,2 +1,10 @@
 [2026-08-15T15:45:12+01:00] Run started (from_step=01, continue_on_error=False)
 [2026-08-15T15:45:12+01:00] Step 01 (01_foundation-architecture.md): starting
+[2026-08-15T15:49:45+01:00] Step 01 (01_foundation-architecture.md): completed in 4m 33s (rc=0)
+[2026-08-15T15:49:51+01:00] Step 02 (02_animation-core-system.md): starting
+[2026-08-15T15:59:29+01:00] Step 02 (02_animation-core-system.md): completed in 9m 37s (rc=0)
+[2026-08-15T15:59:35+01:00] Step 03 (03_component-demos.md): starting
+[2026-08-15T16:09:40+01:00] Step 03 (03_component-demos.md): completed in 10m 5s (rc=0)
+[2026-08-15T16:09:47+01:00] Step 04 (04_page-loading-effects.md): starting
+[2026-08-15T16:15:43+01:00] Step 04 (04_page-loading-effects.md): completed in 5m 56s (rc=0)
+[2026-08-15T16:15:47+01:00] Step 05 (05_client-selection-flow.md): starting

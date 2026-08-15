@@ -1,0 +1,26 @@
+@keyframes anim-scale-in-kf {
+  from { opacity: 0; transform: scale(var(--s-from, 0.85)); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes anim-scale-out-kf {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(var(--s-from, 0.85)); }
+}
+@keyframes anim-scale-settle-kf {
+  0% { opacity: 0; transform: scale(0.7); }
+  60% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes anim-zoom-bounce-in-kf {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { opacity: 1; transform: scale(1.1); }
+  75% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.anim-scale-in { animation-name: anim-scale-in-kf; }
+.anim-scale-out { animation-name: anim-scale-out-kf; }
+.anim-zoom-in { --s-from: 0.4; animation-name: anim-scale-in-kf; }
+.anim-zoom-out { --s-from: 1.6; animation-name: anim-scale-out-kf; }
+.anim-scale-settle { animation-name: anim-scale-settle-kf; }
+.anim-zoom-bounce-in { animation-name: anim-zoom-bounce-in-kf; }

@@ -1,0 +1,33 @@
+@keyframes anim-shake-error-kf {
+  10%, 90% { transform: translateX(-6px); }
+  20%, 80% { transform: translateX(5px); }
+  30%, 50%, 70% { transform: translateX(-9px); }
+  40%, 60% { transform: translateX(9px); }
+}
+@keyframes anim-shake-horizontal-kf {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+@keyframes anim-shake-vertical-kf {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-8px); }
+  75% { transform: translateY(8px); }
+}
+@keyframes anim-wiggle-kf {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-6deg); }
+  75% { transform: rotate(6deg); }
+}
+@keyframes anim-jelly-kf {
+  0%, 100% { transform: scale(1, 1); }
+  30% { transform: scale(1.2, 0.8); }
+  50% { transform: scale(0.9, 1.1); }
+  70% { transform: scale(1.05, 0.95); }
+}
+
+.anim-shake-error { animation-name: anim-shake-error-kf; }
+.anim-shake-horizontal { animation-name: anim-shake-horizontal-kf; }
+.anim-shake-vertical { animation-name: anim-shake-vertical-kf; }
+.anim-wiggle { animation-name: anim-wiggle-kf; }
+.anim-jelly { animation-name: anim-jelly-kf; }

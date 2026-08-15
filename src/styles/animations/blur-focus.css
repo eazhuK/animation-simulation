@@ -1,0 +1,26 @@
+@keyframes anim-blur-in-kf {
+  from { opacity: 0; filter: blur(10px); }
+  to { opacity: 1; filter: blur(0); }
+}
+@keyframes anim-blur-out-kf {
+  from { opacity: 1; filter: blur(0); }
+  to { opacity: 0; filter: blur(10px); }
+}
+@keyframes anim-focus-in-kf {
+  from { opacity: 0; filter: blur(6px); transform: scale(1.1); }
+  to { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+@keyframes anim-unblur-reveal-kf {
+  0% { opacity: 0.3; filter: blur(14px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+@keyframes anim-blur-pulse-kf {
+  0%, 100% { filter: blur(0); }
+  50% { filter: blur(3px); }
+}
+
+.anim-blur-in { animation-name: anim-blur-in-kf; }
+.anim-blur-out { animation-name: anim-blur-out-kf; }
+.anim-focus-in { animation-name: anim-focus-in-kf; }
+.anim-unblur-reveal { animation-name: anim-unblur-reveal-kf; }
+.anim-blur-pulse { animation-name: anim-blur-pulse-kf; animation-iteration-count: infinite; }

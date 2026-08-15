@@ -1,0 +1,26 @@
+/**
+ * Stagger classes apply to each CHILD of a staggered group. AnimationPreview sets each child's
+ * own --anim-delay (base delay + index * step) inline, which wins over the shared group value
+ * since it's set directly on the element.
+ */
+@keyframes anim-stagger-fade-up-kf {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes anim-stagger-slide-in-kf {
+  from { opacity: 0; transform: translateX(-24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes anim-stagger-scale-in-kf {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes anim-stagger-card-grid-kf {
+  from { opacity: 0; transform: translateY(24px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.anim-stagger-fade-up { animation-name: anim-stagger-fade-up-kf; }
+.anim-stagger-slide-in { animation-name: anim-stagger-slide-in-kf; }
+.anim-stagger-scale-in { animation-name: anim-stagger-scale-in-kf; }
+.anim-stagger-card-grid { animation-name: anim-stagger-card-grid-kf; }

@@ -1,0 +1,26 @@
+@keyframes anim-row-stagger-reveal-kf {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes anim-row-slide-in-kf {
+  from { opacity: 0; transform: translateX(-32px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes anim-row-fade-in-kf {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes anim-row-highlight-new-kf {
+  0% { background-color: var(--color-primary-soft); }
+  100% { background-color: transparent; }
+}
+@keyframes anim-row-expand-kf {
+  from { opacity: 0; transform: scaleY(0.6); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+.anim-row-stagger-reveal { animation-name: anim-row-stagger-reveal-kf; }
+.anim-row-slide-in { animation-name: anim-row-slide-in-kf; }
+.anim-row-fade-in { animation-name: anim-row-fade-in-kf; }
+.anim-row-highlight-new { animation-name: anim-row-highlight-new-kf; }
+.anim-row-expand { animation-name: anim-row-expand-kf; transform-origin: top; }
