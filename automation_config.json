@@ -1,0 +1,22 @@
+{
+  "project_name": "Animation simulation",
+  "project_folder": ".",
+  "author": "keazh",
+  "model": "sonnet",
+  "permission_mode": "auto",
+  "prompts_dir": "prompts",
+  "output_dir": "output",
+  "logs_dir": "output/logs",
+  "status_file": "output/status.json",
+  "progress_log": "output/progress.log",
+  "claude_command": "claude",
+  "extra_claude_args": ["--no-session-persistence"],
+  "stop_on_first_failure": true,
+  "notifications": {
+    "enabled": true,
+    "use_burnttoast_if_available": true
+  },
+  "report": {
+    "regenerate_after_each_step": true
+  }
+}

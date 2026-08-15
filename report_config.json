@@ -1,0 +1,17 @@
+{
+  "project_name": "Animation simulation",
+  "author": "keazh",
+  "status_file": "output/status.json",
+  "progress_log": "output/progress.log",
+  "output_md": "output/automation_report.md",
+  "output_html": "output/automation_report.html",
+  "output_pdf": "output/automation_report.pdf",
+  "generate_pdf": true,
+  "pdf_browser_candidates": [
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  ],
+  "watch_refresh_seconds": 5
+}
