@@ -17,11 +17,12 @@ const STAGGER_COUNT = 4
 
 export default function AnimationPreview({ animation, context }) {
   const { id, name, description, cssClassName, suitableFor, previewKind = 'enter' } = animation
-  const { isFavourite, toggleFavourite, registerUsage } = useSelection()
+  const { getSelection, saveAnimation, saveDraft, removeAnimation, registerUsage } = useSelection()
+  const selection = getSelection(id)
 
-  const [durationMs, setDurationMs] = useState(500)
-  const [delayMs, setDelayMs] = useState(0)
-  const [speed, setSpeed] = useState(1)
+  const [durationMs, setDurationMs] = useState(() => selection?.settings?.durationMs ?? 500)
+  const [delayMs, setDelayMs] = useState(() => selection?.settings?.delayMs ?? 0)
+  const [speed, setSpeed] = useState(() => selection?.settings?.speed ?? 1)
   const [replayToken, setReplayToken] = useState(0)
   const [isPreviewing, setIsPreviewing] = useState(false)
 
@@ -51,6 +52,7 @@ export default function AnimationPreview({ animation, context }) {
     '--anim-duration': `${effectiveDuration}ms`,
     '--anim-delay': `${delayMs}ms`,
   }
+  const currentSettings = { durationMs, delayMs, speed }
 
   return (
     <article className="anim-card">
@@ -59,10 +61,13 @@ export default function AnimationPreview({ animation, context }) {
           <h4 className="anim-card__title">{name}</h4>
           <p className="anim-card__desc">{description}</p>
         </div>
-        <label className="anim-card__fav">
-          <input type="checkbox" checked={isFavourite(id)} onChange={() => toggleFavourite(id)} />
-          <span>Favourite</span>
-        </label>
+        <span className={`anim-card__status anim-card__status--${selection?.status ?? 'new'}`}>
+          {selection?.status === 'saved'
+            ? 'Saved'
+            : selection?.status === 'draft'
+              ? 'Draft'
+              : 'Not saved'}
+        </span>
       </header>
 
       <div className="anim-card__tags">
@@ -92,9 +97,34 @@ export default function AnimationPreview({ animation, context }) {
       </div>
 
       <div className="anim-card__controls">
-        <button type="button" className="anim-card__replay" onClick={handleReplay}>
-          ↻ Replay
-        </button>
+        <div className="anim-card__actions">
+          <button
+            type="button"
+            className="anim-card__action anim-card__action--primary"
+            onClick={() => saveAnimation(id, currentSettings)}
+          >
+            {selection?.status === 'saved' ? '✓ Saved' : 'Save'}
+          </button>
+          <button
+            type="button"
+            className="anim-card__action"
+            onClick={() => saveDraft(id, currentSettings)}
+          >
+            {selection?.status === 'draft' ? '✓ Draft saved' : 'Save draft'}
+          </button>
+          {selection && (
+            <button
+              type="button"
+              className="anim-card__action anim-card__action--quiet"
+              onClick={() => removeAnimation(id)}
+            >
+              Clear
+            </button>
+          )}
+          <button type="button" className="anim-card__replay" onClick={handleReplay}>
+            ↻ Replay
+          </button>
+        </div>
 
         <label className="anim-card__control">
           <span>Duration</span>

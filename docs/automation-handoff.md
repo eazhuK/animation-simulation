@@ -10,6 +10,10 @@ entry — and "Current state" below — before finishing a phase.
   now contains 128 CSS-only animations across 22 categories. Every client-demo navigation page
   from Cards through Text & Brand Motion exposes at least 10 compact tabbed examples, alongside
   the Gallery, Visual Foundation Gallery, and selection/favourites workflow.
+- The selection workflow now includes a frontend-only Dashboard, Saved Categories, and Draft
+  Mode. `SelectionContext` persists a versioned workspace record per animation (saved/draft
+  status plus duration/delay/speed) under `ui-animation-catalogue:workspace:v1`, migrates legacy
+  favourites automatically, and keeps all data in browser `localStorage` with no backend.
 - Stack: Vite + React, **JavaScript** (JSX, not TS) — matches the scaffold's default template.
 - Folder layout:
   - `src/main.jsx` — entry point, imports `src/styles/global.css`.
@@ -303,3 +307,14 @@ tighter padding under 480px, tables scroll horizontally instead of clipping), a 
 project-root `README.md`. Build + lint clean, temporary Playwright pass (uninstalled after) green
 across mobile/tablet/desktop with zero console errors and no horizontal overflow. See "Current
 state" above for the exact file list. **All 6 phases are now complete.**
+
+### Ad hoc addition — Frontend workspace, saves, and drafts (2026-08-17)
+
+Expanded `SelectionContext` from a favourites set into a versioned frontend workspace that stores
+saved/draft status and Duration/Delay/Speed per animation in `localStorage`, while migrating the
+legacy favourites key. Added Dashboard, Saved Categories, and Draft Mode views, live sidebar
+counters, and Save / Save draft / Clear controls to every `AnimationPreview`. Dashboard is now the
+default section; Saved Animations retains the existing summary/export workflow. Verified with
+`npm run build`, `npm run lint`, and a temporary Playwright Core + system Chrome smoke test:
+900ms draft save, refresh restore, dashboard count, draft-to-saved promotion, category grouping,
+second refresh persistence, and zero console errors. Temporary test dependency was pruned.

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Sidebar from './components/layout/Sidebar.jsx'
 import DemoMode from './components/layout/DemoMode.jsx'
 import Gallery from './components/views/Gallery.jsx'
@@ -14,9 +14,15 @@ import NavigationMotion from './components/views/NavigationMotion.jsx'
 import TextBrandMotion from './components/views/TextBrandMotion.jsx'
 import VisualFoundationGallery from './components/views/VisualFoundationGallery.jsx'
 import Favourites from './components/views/Favourites.jsx'
+import Dashboard from './components/views/Dashboard.jsx'
+import SavedCategories from './components/views/SavedCategories.jsx'
+import Drafts from './components/views/Drafts.jsx'
 import { SECTIONS, DEFAULT_SECTION_ID } from './data/sections.js'
+import { ANIMATIONS_BY_ID } from './data/animations.js'
+import { useSelection } from './context/SelectionContext.jsx'
 
 const VIEW_COMPONENTS = {
+  dashboard: Dashboard,
   gallery: Gallery,
   cards: Cards,
   forms: Forms,
@@ -29,12 +35,26 @@ const VIEW_COMPONENTS = {
   'navigation-motion': NavigationMotion,
   'text-brand-motion': TextBrandMotion,
   'visual-foundation': VisualFoundationGallery,
+  'saved-categories': SavedCategories,
+  drafts: Drafts,
   favourites: Favourites,
 }
 
 function App() {
   const [activeSection, setActiveSection] = useState(DEFAULT_SECTION_ID)
   const [isDemoMode, setIsDemoMode] = useState(false)
+  const { favourites, drafts } = useSelection()
+
+  const sectionCounts = useMemo(
+    () => ({
+      'saved-categories': new Set(
+        Array.from(favourites).map((id) => ANIMATIONS_BY_ID[id]?.category).filter(Boolean)
+      ).size,
+      drafts: drafts.size,
+      favourites: favourites.size,
+    }),
+    [favourites, drafts]
+  )
 
   const activeLabel =
     SECTIONS.find((section) => section.id === activeSection)?.label ?? ''
@@ -48,7 +68,7 @@ function App() {
         onSelectSection={setActiveSection}
         onExit={() => setIsDemoMode(false)}
       >
-        <ActiveViewComponent />
+        <ActiveViewComponent onNavigate={setActiveSection} />
       </DemoMode>
     )
   }
@@ -59,6 +79,7 @@ function App() {
         activeSection={activeSection}
         onSelectSection={setActiveSection}
         onStartDemo={() => setIsDemoMode(true)}
+        sectionCounts={sectionCounts}
       />
       <div className="app-main">
         <header className="app-header">
@@ -69,7 +90,7 @@ function App() {
             activeSection === 'gallery' ? ' app-main__content--gallery' : ''
           }`}
         >
-          <ActiveViewComponent />
+          <ActiveViewComponent onNavigate={setActiveSection} />
         </main>
       </div>
     </div>

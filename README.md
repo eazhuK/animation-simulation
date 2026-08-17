@@ -26,6 +26,8 @@ npm run lint     # oxlint
 
 ## Tour of the views
 
+- **Dashboard** — frontend-only workspace summary showing saved animations, drafts, saved
+  categories, catalogue size, recent activity, and quick links into each collection.
 - **Gallery** — all 128 animations grouped by category (fade, slide, scale/zoom, rotate, flip,
   bounce, shake/wiggle, blur/focus, reveal/mask, stagger, loading, hover, page transitions,
   modal/popup, form field, table/list, button feedback, notification/toast, 3D transformations,
@@ -53,9 +55,15 @@ npm run lint     # oxlint
   and call-to-action motion examples for presentation-focused screens.
 - **Visual Foundation Gallery** — visual-theme simulations with live presentation controls and
   side-by-side comparison.
-- **Selected / Favourites** — every animation marked as a favourite (from any view), grouped with
-  where it was used, plus a copyable/printable summary to share with the dev team. State persists
-  across reloads via `localStorage`.
+- **Saved Categories** — final animation choices grouped automatically by category, with actions
+  to move an item back to draft or remove it.
+- **Draft Mode** — unfinished animation choices with their Duration/Delay/Speed values restored,
+  ready to tune and promote to saved.
+- **Saved Animations** — every final choice grouped with where it was used, plus a
+  copyable/printable summary to share with the dev team.
+
+Saved and draft status, timing controls, and usage history persist across reloads in browser
+`localStorage`. No backend, account, or network storage is used.
 
 ## Notes
 

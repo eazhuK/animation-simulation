@@ -129,14 +129,29 @@
   color: var(--color-text-muted);
 }
 
-.anim-card__fav {
-  display: flex;
+.anim-card__status {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-2xs);
+  min-height: 24px;
+  padding: 2px var(--space-xs);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
   font-size: var(--font-size-xs);
+  font-weight: 700;
   color: var(--color-text-muted);
   white-space: nowrap;
-  cursor: pointer;
+}
+
+.anim-card__status--saved {
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-success) 28%, var(--color-border));
+}
+
+.anim-card__status--draft {
+  color: #8a6500;
+  background: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-warning) 32%, var(--color-border));
 }
 
 .anim-card__tags {
@@ -189,21 +204,49 @@
   gap: var(--space-xs);
 }
 
+.anim-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+}
+
+.anim-card__action,
 .anim-card__replay {
-  align-self: flex-start;
+  min-height: 30px;
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-primary);
   font-weight: 600;
   font-size: var(--font-size-xs);
   border-radius: var(--radius-pill);
-  padding: var(--space-2xs) var(--space-md);
+  padding: var(--space-2xs) var(--space-sm);
   cursor: pointer;
-  transition: background var(--duration-fast) var(--ease-standard);
+  transition: background var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
 }
 
+.anim-card__action:hover,
 .anim-card__replay:hover {
   background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+}
+
+.anim-card__action--primary {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.anim-card__action--primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.anim-card__action--quiet {
+  color: var(--color-text-muted);
+}
+
+.anim-card__replay {
+  margin-left: auto;
 }
 
 .anim-card__control {

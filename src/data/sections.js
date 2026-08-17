@@ -3,6 +3,7 @@
  * Matches the sections named in docs/requirement.md / CLAUDE.md Phase 1 scope.
  */
 export const SECTIONS = [
+  { id: 'dashboard', label: 'Dashboard' },
   { id: 'gallery', label: 'Gallery' },
   { id: 'cards', label: 'Cards' },
   { id: 'forms', label: 'Forms' },
@@ -15,7 +16,9 @@ export const SECTIONS = [
   { id: 'navigation-motion', label: 'Navigation & Menu Motion' },
   { id: 'text-brand-motion', label: 'Text & Brand Motion' },
   { id: 'visual-foundation', label: 'Visual Foundation Gallery' },
-  { id: 'favourites', label: 'Selected / Favourites' },
+  { id: 'saved-categories', label: 'Saved Categories' },
+  { id: 'drafts', label: 'Draft Mode' },
+  { id: 'favourites', label: 'Saved Animations' },
 ]
 
 export const DEFAULT_SECTION_ID = SECTIONS[0].id

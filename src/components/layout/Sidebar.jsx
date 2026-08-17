@@ -1,6 +1,6 @@
 import { SECTIONS } from '../../data/sections.js'
 
-export default function Sidebar({ activeSection, onSelectSection, onStartDemo }) {
+export default function Sidebar({ activeSection, onSelectSection, onStartDemo, sectionCounts = {} }) {
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">UI Animation Catalogue</div>
@@ -15,7 +15,10 @@ export default function Sidebar({ activeSection, onSelectSection, onStartDemo })
             aria-current={section.id === activeSection ? 'page' : undefined}
             onClick={() => onSelectSection(section.id)}
           >
-            {section.label}
+            <span>{section.label}</span>
+            {sectionCounts[section.id] > 0 && (
+              <span className="sidebar__count">{sectionCounts[section.id]}</span>
+            )}
           </button>
         ))}
       </nav>

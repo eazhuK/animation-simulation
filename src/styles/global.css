@@ -8,6 +8,7 @@
 @import './components/navigation-motion-demos.css';
 @import './components/compact-effect-demos.css';
 @import './components/text-brand-demos.css';
+@import './components/workspace.css';
 
 *,
 *::before,
@@ -152,6 +153,27 @@ textarea:focus-visible,
 
 .sidebar__link.is-active {
   background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.sidebar__link > span:first-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.sidebar__count {
+  min-width: 1.4rem;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.sidebar__link.is-active .sidebar__count {
+  background: var(--color-surface);
   color: var(--color-primary);
 }
 

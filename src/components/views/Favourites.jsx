@@ -5,7 +5,7 @@ import { useSelection } from '../../context/SelectionContext.jsx'
 import AnimationPreview from '../shared/AnimationPreview.jsx'
 
 export default function Favourites() {
-  const { favourites, getUsage, toggleFavourite } = useSelection()
+  const { favourites, getUsage, removeAnimation } = useSelection()
   const [copyState, setCopyState] = useState('idle')
 
   const selected = useMemo(
@@ -44,11 +44,11 @@ export default function Favourites() {
   return (
     <section className="view">
       <header className="view__header">
-        <h2>Selected Animations</h2>
+        <h2>Saved Animations</h2>
         <p>
           {selected.length === 0
-            ? 'Nothing marked yet — favourite any animation across the catalogue (Gallery or any component demo) and it will show up here, ready to hand off to the dev team.'
-            : `${selected.length} animation${selected.length === 1 ? '' : 's'} selected — replay, tweak, and share the summary below with the dev team.`}
+            ? 'Nothing saved yet — save any animation across the catalogue and it will show up here, ready to hand off to the dev team.'
+            : `${selected.length} animation${selected.length === 1 ? '' : 's'} saved — replay, tweak, and share the summary below with the dev team.`}
         </p>
       </header>
 
@@ -86,7 +86,7 @@ export default function Favourites() {
               <button
                 type="button"
                 className="demo-btn demo-btn--sm"
-                onClick={() => toggleFavourite(animation.id)}
+                onClick={() => removeAnimation(animation.id)}
               >
                 Remove
               </button>
