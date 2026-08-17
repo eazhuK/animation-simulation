@@ -6,10 +6,10 @@ entry — and "Current state" below — before finishing a phase.
 
 ## Current state
 
-- Repo status as of 2026-08-15: **Phase 6 complete — all 6 phases done.** The showcase is
-  feature-complete: 101 CSS-only animations across 18 categories, live on Gallery + six
-  component-demo views, with shared favourite/selection state and a polish/a11y/responsive pass
-  on top. No further phases are queued.
+- Repo status as of 2026-08-17: **Phase 6 complete, with ad hoc showcase additions.** The catalogue
+  now contains 128 CSS-only animations across 22 categories. Every client-demo navigation page
+  from Cards through Text & Brand Motion exposes at least 10 compact tabbed examples, alongside
+  the Gallery, Visual Foundation Gallery, and selection/favourites workflow.
 - Stack: Vite + React, **JavaScript** (JSX, not TS) — matches the scaffold's default template.
 - Folder layout:
   - `src/main.jsx` — entry point, imports `src/styles/global.css`.
@@ -261,6 +261,38 @@ instead of local component state, and each demo block passes a `context` label u
 full preview controls, per-context usage, and a copy-to-clipboard/print shareable summary. Removed
 the now-unused `PlaceholderView`. Build clean, temporary Playwright smoke pass (uninstalled after)
 green with zero console errors. See "Current state" above for exact file list and storage keys.
+
+### Ad hoc addition — Visual Foundation Gallery (2026-08-15)
+
+Added a standalone "Visual Foundation Gallery" section (not part of the 6-phase plan above,
+requested directly) — a 30-theme premium visual-style simulator, entirely separate from the
+animation/transition showcase. Unlike the rest of the app, this module uses **Tailwind CSS**
+(added as a dev dependency, wired via `@tailwindcss/vite` in `vite.config.js`), scoped so it can't
+affect the existing plain-CSS showcase: `src/styles/visual-foundation/tailwind.css` imports only
+Tailwind's `theme`+`utilities` layers (no `preflight`/reset), and that CSS file is imported only
+from `src/components/views/VisualFoundationGallery.jsx`, so Tailwind classes only exist where this
+module's own components use them.
+- `src/data/visual-foundation/themes.js` — 30 theme entries (name/description/tags/pageType/
+  palette/defaultControls) via a `theme()` factory that expands a compact hue-based palette.
+- `src/data/visual-foundation/pageContent.js` — 10 realistic page-content configs (analytics
+  dashboard, CRM, project board, finance, e-commerce, healthcare, HR, support, invoices, booking),
+  3 themes assigned to each, so 30 simulations show varied real content rather than 30 bespoke pages.
+- `src/lib/visual-foundation/` — `color.js` (HSL helpers), `controls.js` (the 6 client-facing
+  dimensions: shadow intensity / finish / atmosphere / border style / radius / colour intensity,
+  each with fixed option sets), `computeTokens.js` (merges a theme + control overrides into a flat
+  `--vfg-*` CSS custom-property map — the double-shadow/glass/lacquer system lives here).
+- `src/components/visual-foundation/` — `ThemeStage.jsx` (applies token map via inline style),
+  `primitives.jsx` (Card/Panel/Button/Pill/Table/ChartBars/Modal/Toast/etc., all Tailwind classes
+  reading `var(--vfg-*)`), `PageTemplate.jsx` (assembles one full page from a pageContent config),
+  `PreviewCard.jsx`/`CompareView.jsx`/`ControlPanel.jsx`/`VisualFoundationApp.jsx` (gallery grid /
+  detail preview with live controls / side-by-side compare, tag + favourites filtering).
+- `src/context/VisualFoundationContext.jsx` — separate favourites store/localStorage key from the
+  animation catalogue's `SelectionContext`, so the two features' favourites don't collide.
+- `src/components/views/VisualFoundationGallery.jsx` — the routable view; wired into
+  `src/data/sections.js` (new `visual-foundation` section, before Favourites) and `src/App.jsx`'s
+  `VIEW_COMPONENTS` map.
+- Not yet verified with a build/dev-server/browser pass (skipped per explicit instruction this
+  round — development only, no testing) — do that before treating this module as done.
 
 ### Phase 6 — done (2026-08-15)
 

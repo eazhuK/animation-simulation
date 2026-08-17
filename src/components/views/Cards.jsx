@@ -1,5 +1,19 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import AnimationLabel from '../shared/AnimationLabel.jsx'
+import EffectShowcasePanel from '../shared/EffectShowcasePanel.jsx'
+
+const CARD_SECTIONS = [
+  { id: 'layout-entry', label: 'Layout & entry direction' },
+  { id: 'staggered-entry', label: 'Staggered entry' },
+  { id: 'entrance-effects', label: 'Entrance effects' },
+  { id: 'directions-converge', label: 'Four directions converge' },
+  { id: 'hover-interactions', label: 'Hover interactions' },
+  { id: 'fade-collection', label: 'Fade-up collection', animationId: 'fade-in-up', title: 'Fade-up card collection', description: 'A restrained fade and rise for loading a new card set.' },
+  { id: 'diagonal-reveal', label: 'Diagonal reveal', animationId: 'clip-reveal-diagonal', title: 'Diagonal card reveal', description: 'Cards appear through a directional clipped reveal.' },
+  { id: 'rotate-entrance', label: 'Rotate entrance', animationId: 'rotate-in', title: 'Rotating card entrance', description: 'A compact rotational entrance for featured content.' },
+  { id: 'focus-cards', label: 'Focus reveal', animationId: 'focus-in', title: 'Focus-in card reveal', description: 'Cards sharpen and settle into the foreground.' },
+  { id: 'scale-cascade', label: 'Scale cascade', animationId: 'stagger-scale-in', title: 'Scale cascade grid', description: 'A card group scales into place in sequence.' },
+]
 
 const DIRECTIONS = [
   { id: 'left', label: 'From Left', cssClassName: 'anim-slide-in-left', animationId: 'slide-in-left' },
@@ -49,6 +63,8 @@ function SampleCard({ title, body, tag, className = '' }) {
 }
 
 export default function Cards() {
+  const [activeCardSection, setActiveCardSection] = useState(CARD_SECTIONS[0].id)
+  const tabRefs = useRef([])
   const [cardCount, setCardCount] = useState(3)
   const [direction, setDirection] = useState(DIRECTIONS[0])
   const [entryKey, setEntryKey] = useState(0)
@@ -73,6 +89,34 @@ export default function Cards() {
     setTimeout(() => setPreviewingHover((current) => (current === animationId ? null : current)), 650)
   }
 
+  function selectTab(index) {
+    const nextSection = CARD_SECTIONS[index]
+    if (!nextSection) return
+
+    setActiveCardSection(nextSection.id)
+    tabRefs.current[index]?.focus()
+  }
+
+  function handleTabKeyDown(event, index) {
+    let nextIndex
+
+    if (event.key === 'ArrowRight') {
+      nextIndex = (index + 1) % CARD_SECTIONS.length
+    } else if (event.key === 'ArrowLeft') {
+      nextIndex = (index - 1 + CARD_SECTIONS.length) % CARD_SECTIONS.length
+    } else if (event.key === 'Home') {
+      nextIndex = 0
+    } else if (event.key === 'End') {
+      nextIndex = CARD_SECTIONS.length - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    event.stopPropagation()
+    selectTab(nextIndex)
+  }
+
   const cards = SAMPLE_CARDS.slice(0, cardCount)
 
   return (
@@ -85,7 +129,42 @@ export default function Cards() {
         </p>
       </header>
 
-      <section className="demo-block">
+      <nav className="gallery-tabs" aria-label="Card animation sections">
+        <div className="gallery-tabs__list" role="tablist" aria-orientation="horizontal">
+          {CARD_SECTIONS.map((section, index) => {
+            const isActive = section.id === activeCardSection
+
+            return (
+              <button
+                className={`gallery-tabs__tab${isActive ? ' is-active' : ''}`}
+                id={`cards-tab-${section.id}`}
+                key={section.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`cards-panel-${section.id}`}
+                tabIndex={isActive ? 0 : -1}
+                ref={(element) => {
+                  tabRefs.current[index] = element
+                }}
+                onClick={() => setActiveCardSection(section.id)}
+                onKeyDown={(event) => handleTabKeyDown(event, index)}
+              >
+                {section.label}
+              </button>
+            )
+          })}
+        </div>
+      </nav>
+
+      <section
+        className="demo-block"
+        id="cards-panel-layout-entry"
+        role="tabpanel"
+        aria-labelledby="cards-tab-layout-entry"
+        tabIndex={0}
+        hidden={activeCardSection !== 'layout-entry'}
+      >
         <div className="demo-block__head">
           <h3>Layout &amp; entry direction</h3>
           <AnimationLabel animationId={direction.animationId} context="Cards → Layout & entry direction" />
@@ -123,7 +202,14 @@ export default function Cards() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="cards-panel-staggered-entry"
+        role="tabpanel"
+        aria-labelledby="cards-tab-staggered-entry"
+        tabIndex={0}
+        hidden={activeCardSection !== 'staggered-entry'}
+      >
         <div className="demo-block__head">
           <h3>Staggered entry</h3>
           <AnimationLabel animationId="stagger-card-grid" context="Cards → Staggered entry" />
@@ -142,7 +228,14 @@ export default function Cards() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="cards-panel-entrance-effects"
+        role="tabpanel"
+        aria-labelledby="cards-tab-entrance-effects"
+        tabIndex={0}
+        hidden={activeCardSection !== 'entrance-effects'}
+      >
         <div className="demo-block__head">
           <h3>Entrance effects</h3>
           <AnimationLabel animationId={entranceEffect.animationId} context="Cards → Entrance effects" />
@@ -169,7 +262,14 @@ export default function Cards() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="cards-panel-directions-converge"
+        role="tabpanel"
+        aria-labelledby="cards-tab-directions-converge"
+        tabIndex={0}
+        hidden={activeCardSection !== 'directions-converge'}
+      >
         <div className="demo-block__head">
           <h3>Four directions converge</h3>
           <AnimationLabel
@@ -189,7 +289,14 @@ export default function Cards() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="cards-panel-hover-interactions"
+        role="tabpanel"
+        aria-labelledby="cards-tab-hover-interactions"
+        tabIndex={0}
+        hidden={activeCardSection !== 'hover-interactions'}
+      >
         <div className="demo-block__head">
           <h3>Hover interactions</h3>
           <AnimationLabel
@@ -215,6 +322,20 @@ export default function Cards() {
           ))}
         </div>
       </section>
+
+      {CARD_SECTIONS.slice(5).map((section) => (
+        <EffectShowcasePanel
+          active={activeCardSection === section.id}
+          animationId={section.animationId}
+          context={`Cards → ${section.title}`}
+          description={section.description}
+          id={section.id}
+          idPrefix="cards"
+          key={section.id}
+          kind="card"
+          title={section.title}
+        />
+      ))}
     </section>
   )
 }

@@ -1,5 +1,20 @@
 import { useEffect, useState } from 'react'
 import AnimationLabel from '../shared/AnimationLabel.jsx'
+import EffectShowcasePanel from '../shared/EffectShowcasePanel.jsx'
+import SectionTabs from '../shared/SectionTabs.jsx'
+
+const MODAL_SECTIONS = [
+  { id: 'complete-gallery', label: 'Complete modal gallery' },
+  { id: 'fade-backdrop', label: 'Fade backdrop', animationId: 'modal-fade-backdrop', title: 'Fading modal backdrop', description: 'The surrounding context dims before the dialog takes focus.' },
+  { id: 'scale-popup', label: 'Scale popup', animationId: 'modal-scale-in', title: 'Scaled popup entrance', description: 'A centred popup settles forward into view.' },
+  { id: 'slide-drawer', label: 'Slide drawer', animationId: 'drawer-slide-in', title: 'Sliding side drawer', description: 'A task panel enters from the screen edge.' },
+  { id: 'bottom-sheet', label: 'Bottom sheet', animationId: 'bottom-sheet-rise', title: 'Rising bottom sheet', description: 'A mobile action surface rises from the lower edge.' },
+  { id: 'flip-modal', label: 'Flip modal', animationId: 'modal-flip-in', title: 'Flipping modal entrance', description: 'The dialog rotates into view around a horizontal axis.' },
+  { id: 'bounce-popup', label: 'Bounce popup', animationId: 'modal-bounce-in', title: 'Bouncing popup entrance', description: 'A small overshoot gives the popup a spring response.' },
+  { id: 'confirmation', label: 'Confirmation alert', animationId: 'zoom-bounce-in', title: 'Confirmation alert entrance', description: 'A focused alert combines zoom and restrained overshoot.' },
+  { id: 'toast-entry', label: 'Toast entry', animationId: 'toast-slide-in', title: 'Toast notification entry', description: 'A notification enters from the viewport edge.' },
+  { id: 'toast-dismiss', label: 'Toast dismissal', animationId: 'slide-out-right', title: 'Toast notification dismissal', description: 'The notification exits cleanly after its countdown.' },
+]
 
 const MODAL_TYPES = [
   {
@@ -56,6 +71,7 @@ const MODAL_TYPES = [
 const TOAST_VISIBLE_MS = 2200
 
 export default function Modals() {
+  const [activeModalSection, setActiveModalSection] = useState(MODAL_SECTIONS[0].id)
   const [activeModalId, setActiveModalId] = useState(null)
   const [toastPhase, setToastPhase] = useState(null) // null | 'enter' | 'exit'
 
@@ -90,7 +106,25 @@ export default function Modals() {
         </p>
       </header>
 
-      <section className="demo-block">
+      <SectionTabs
+        items={MODAL_SECTIONS}
+        activeId={activeModalSection}
+        onChange={(id) => {
+          setActiveModalSection(id)
+          setActiveModalId(null)
+        }}
+        idPrefix="modals"
+        label="Modal and popup animation sections"
+      />
+
+      <section
+        className="demo-block"
+        id="modals-panel-complete-gallery"
+        role="tabpanel"
+        aria-labelledby="modals-tab-complete-gallery"
+        tabIndex={0}
+        hidden={activeModalSection !== 'complete-gallery'}
+      >
         <div className="demo-block__head">
           <h3>Modal &amp; popup styles</h3>
         </div>
@@ -119,6 +153,20 @@ export default function Modals() {
           context="Modals → Toast notification"
         />
       </section>
+
+      {MODAL_SECTIONS.slice(1).map((section) => (
+        <EffectShowcasePanel
+          active={activeModalSection === section.id}
+          animationId={section.animationId}
+          context={`Modals → ${section.title}`}
+          description={section.description}
+          id={section.id}
+          idPrefix="modals"
+          key={section.id}
+          kind="modal"
+          title={section.title}
+        />
+      ))}
 
       {activeModal && (
         <div className="demo-modal-backdrop anim-modal-fade-backdrop" onClick={closeModal}>

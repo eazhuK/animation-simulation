@@ -1,0 +1,43 @@
+.text-brand-stage {
+  display: grid;
+  min-height: 360px;
+  place-items: center;
+  overflow: hidden;
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-text);
+  color: var(--color-text-inverse);
+}
+
+.text-brand-mask { overflow: hidden; }
+.text-brand-mask h3,
+.text-brand-morph { max-width: 760px; font-size: clamp(2rem, 6vw, 4.5rem); line-height: 1.05; text-align: center; text-wrap: balance; }
+
+.text-brand-word-line,
+.text-brand-letter-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.28em; font-size: clamp(1.8rem, 5vw, 4rem); line-height: 1.1; text-align: center; }
+.text-brand-word-line span,
+.text-brand-letter-line span { display: inline-block; }
+
+.text-brand-logo { display: flex; gap: var(--space-xs); }
+.text-brand-logo span { display: grid; width: 72px; height: 72px; place-items: center; border-radius: var(--radius-lg); background: var(--color-primary); font-size: var(--font-size-xl); font-weight: 800; }
+
+.text-brand-ticker { width: 100%; overflow: hidden; border-block: 1px solid rgba(255,255,255,0.24); padding-block: var(--space-md); }
+.text-brand-ticker > div { width: max-content; white-space: nowrap; font-size: var(--font-size-lg); font-weight: 700; }
+
+.text-brand-quote { display: flex; max-width: 720px; flex-direction: column; gap: var(--space-lg); margin: 0; font-size: clamp(1.5rem, 4vw, 3rem); line-height: 1.2; text-align: center; text-wrap: balance; }
+.text-brand-quote cite { color: var(--color-primary-soft); font-size: var(--font-size-sm); font-style: normal; }
+
+.text-brand-number { display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); text-align: center; }
+.text-brand-number strong { color: var(--color-primary-soft); font-size: clamp(4rem, 12vw, 8rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.text-brand-number span { font-size: var(--font-size-lg); }
+
+.text-brand-cta { display: flex; max-width: 720px; flex-direction: column; align-items: center; gap: var(--space-md); text-align: center; }
+.text-brand-cta > span { color: var(--color-primary-soft); font-size: var(--font-size-xs); font-weight: 700; }
+.text-brand-cta h3 { font-size: clamp(2rem, 6vw, 4rem); line-height: 1.05; text-wrap: balance; }
+.text-brand-cta button { padding: var(--space-sm) var(--space-xl); border: 0; border-radius: var(--radius-pill); background: var(--color-primary); color: var(--color-text-inverse); font-weight: 700; }
+
+@media (max-width: 520px) {
+  .text-brand-stage { min-height: 300px; padding: var(--space-md); }
+  .text-brand-logo span { width: 52px; height: 52px; }
+}

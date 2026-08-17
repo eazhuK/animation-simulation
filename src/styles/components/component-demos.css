@@ -61,6 +61,10 @@
   box-shadow: var(--shadow-sm);
 }
 
+.demo-block[hidden] {
+  display: none;
+}
+
 .demo-block__head {
   display: flex;
   justify-content: space-between;

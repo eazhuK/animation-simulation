@@ -1,5 +1,20 @@
 import { Fragment, useState } from 'react'
 import AnimationLabel from '../shared/AnimationLabel.jsx'
+import EffectShowcasePanel from '../shared/EffectShowcasePanel.jsx'
+import SectionTabs from '../shared/SectionTabs.jsx'
+
+const TABLE_SECTIONS = [
+  { id: 'complete-table', label: 'Complete table flow' },
+  { id: 'row-stagger', label: 'Row stagger', animationId: 'row-stagger-reveal', title: 'Staggered row reveal', description: 'Rows arrive sequentially to establish scanning order.' },
+  { id: 'row-slide', label: 'Row slide', animationId: 'row-slide-in', title: 'Sliding row entrance', description: 'New rows enter laterally from a shared edge.' },
+  { id: 'row-fade', label: 'Row fade', animationId: 'row-fade-in', title: 'Fading row entrance', description: 'Rows appear with restrained opacity motion.' },
+  { id: 'new-highlight', label: 'New-row highlight', animationId: 'row-highlight-new', title: 'New-row highlight', description: 'A fresh record receives a brief visual acknowledgement.' },
+  { id: 'row-expansion', label: 'Row expansion', animationId: 'row-expand', title: 'Expandable row detail', description: 'A selected record reveals its supporting detail.' },
+  { id: 'sort-loading', label: 'Sort loading', animationId: 'spinner-circle', title: 'Sorting activity state', description: 'A compact progress cue communicates active sorting.' },
+  { id: 'table-skeleton', label: 'Table skeleton', animationId: 'skeleton-shimmer', title: 'Table skeleton loading', description: 'Row-shaped placeholders preserve the table structure.' },
+  { id: 'list-stagger', label: 'List stagger', animationId: 'stagger-slide-in', title: 'Staggered list entrance', description: 'List records enter in a readable sequence.' },
+  { id: 'list-focus', label: 'List focus reveal', animationId: 'focus-in', title: 'Focus-based list reveal', description: 'Records sharpen into view as data resolves.' },
+]
 
 const INITIAL_ROWS = [
   { id: 1, name: 'Amara Okafor', role: 'Product Designer', status: 'Active' },
@@ -24,6 +39,7 @@ const ENTRY_STYLES = [
 const SKELETON_COLUMNS = [80, 60, 40]
 
 export default function Tables() {
+  const [activeTableSection, setActiveTableSection] = useState(TABLE_SECTIONS[0].id)
   const [rows, setRows] = useState(INITIAL_ROWS)
   const [entryStyle, setEntryStyle] = useState(ENTRY_STYLES[0])
   const [revealKey, setRevealKey] = useState(0)
@@ -84,7 +100,16 @@ export default function Tables() {
         </p>
       </header>
 
-      <section className="demo-block">
+      <SectionTabs items={TABLE_SECTIONS} activeId={activeTableSection} onChange={setActiveTableSection} idPrefix="tables" label="Table and list animation sections" />
+
+      <section
+        className="demo-block"
+        id="tables-panel-complete-table"
+        role="tabpanel"
+        aria-labelledby="tables-tab-complete-table"
+        tabIndex={0}
+        hidden={activeTableSection !== 'complete-table'}
+      >
         <div className="demo-block__head">
           <h3>Row reveal &amp; new-row highlight</h3>
           <AnimationLabel
@@ -189,6 +214,20 @@ export default function Tables() {
           </table>
         </div>
       </section>
+
+      {TABLE_SECTIONS.slice(1).map((section) => (
+        <EffectShowcasePanel
+          active={activeTableSection === section.id}
+          animationId={section.animationId}
+          context={`Tables / Lists → ${section.title}`}
+          description={section.description}
+          id={section.id}
+          idPrefix="tables"
+          key={section.id}
+          kind="table"
+          title={section.title}
+        />
+      ))}
     </section>
   )
 }

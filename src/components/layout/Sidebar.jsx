@@ -1,6 +1,6 @@
 import { SECTIONS } from '../../data/sections.js'
 
-export default function Sidebar({ activeSection, onSelectSection }) {
+export default function Sidebar({ activeSection, onSelectSection, onStartDemo }) {
   return (
     <aside className="sidebar">
       <div className="sidebar__brand">UI Animation Catalogue</div>
@@ -19,6 +19,9 @@ export default function Sidebar({ activeSection, onSelectSection }) {
           </button>
         ))}
       </nav>
+      <button type="button" className="sidebar__demo-btn" onClick={onStartDemo}>
+        ▶ Start Client Demo
+      </button>
     </aside>
   )
 }

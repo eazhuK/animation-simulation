@@ -1,5 +1,20 @@
 import { useState } from 'react'
 import AnimationLabel from '../shared/AnimationLabel.jsx'
+import EffectShowcasePanel from '../shared/EffectShowcasePanel.jsx'
+import SectionTabs from '../shared/SectionTabs.jsx'
+
+const FORM_SECTIONS = [
+  { id: 'complete-flow', label: 'Complete form flow' },
+  { id: 'field-stagger', label: 'Field stagger', animationId: 'field-reveal', title: 'Staggered field reveal', description: 'Fields arrive in sequence to guide the reading path.' },
+  { id: 'floating-label', label: 'Floating label', animationId: 'label-float', title: 'Floating-label interaction', description: 'A field label moves into its focused position.' },
+  { id: 'focus-glow', label: 'Focus highlight', animationId: 'input-focus-glow', title: 'Input focus highlight', description: 'The active field gains a clear, local focus treatment.' },
+  { id: 'error-feedback', label: 'Error feedback', animationId: 'field-error-shake', title: 'Validation error feedback', description: 'A short shake identifies the field requiring attention.' },
+  { id: 'success-feedback', label: 'Success feedback', animationId: 'field-success-check', title: 'Field success confirmation', description: 'A confirmation mark enters after successful validation.' },
+  { id: 'submit-loading', label: 'Submit loading', animationId: 'submit-button-loading', title: 'Submit loading state', description: 'The form communicates processing without losing context.' },
+  { id: 'fade-entry', label: 'Fade form entry', animationId: 'fade-in-up', title: 'Fade-up form entrance', description: 'The complete form fades and rises into place.' },
+  { id: 'scale-entry', label: 'Scale form entry', animationId: 'scale-in', title: 'Scaled form entrance', description: 'The form settles forward from a reduced scale.' },
+  { id: 'slide-entry', label: 'Slide form entry', animationId: 'slide-in-right', title: 'Sliding form entrance', description: 'The form enters laterally for a step-to-step workflow.' },
+]
 
 const FIELDS = [
   { id: 'name', label: 'Full name', type: 'text', placeholder: ' ' },
@@ -20,6 +35,7 @@ function validate(values) {
 }
 
 export default function Forms() {
+  const [activeFormSection, setActiveFormSection] = useState(FORM_SECTIONS[0].id)
   const [entryEffect, setEntryEffect] = useState(ENTRY_EFFECTS[0])
   const [entryKey, setEntryKey] = useState(0)
   const [revealKey, setRevealKey] = useState(0)
@@ -64,7 +80,16 @@ export default function Forms() {
         </p>
       </header>
 
-      <section className="demo-block">
+      <SectionTabs items={FORM_SECTIONS} activeId={activeFormSection} onChange={setActiveFormSection} idPrefix="forms" label="Form animation sections" />
+
+      <section
+        className="demo-block"
+        id="forms-panel-complete-flow"
+        role="tabpanel"
+        aria-labelledby="forms-tab-complete-flow"
+        tabIndex={0}
+        hidden={activeFormSection !== 'complete-flow'}
+      >
         <div className="demo-block__head">
           <h3>Container entry &amp; field reveal</h3>
           <AnimationLabel
@@ -147,6 +172,20 @@ export default function Forms() {
           </button>
         </form>
       </section>
+
+      {FORM_SECTIONS.slice(1).map((section) => (
+        <EffectShowcasePanel
+          active={activeFormSection === section.id}
+          animationId={section.animationId}
+          context={`Forms → ${section.title}`}
+          description={section.description}
+          id={section.id}
+          idPrefix="forms"
+          key={section.id}
+          kind="form"
+          title={section.title}
+        />
+      ))}
     </section>
   )
 }

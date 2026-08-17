@@ -1,5 +1,19 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import AnimationLabel from '../shared/AnimationLabel.jsx'
+import EffectShowcasePanel from '../shared/EffectShowcasePanel.jsx'
+
+const LOADER_SECTIONS = [
+  { id: 'spinner-dots', label: 'Spinner & dot loading' },
+  { id: 'pulse-loading', label: 'Pulse loading' },
+  { id: 'skeleton-shimmer', label: 'Skeleton & shimmer loaders' },
+  { id: 'progress-indicators', label: 'Progress indicators' },
+  { id: 'button-loading', label: 'Button loading state' },
+  { id: 'full-page-loading', label: 'Full-page loading screen' },
+  { id: 'blur-pulse', label: 'Blur pulse', animationId: 'blur-pulse', title: 'Blur-pulse loading state', description: 'A soft focus pulse communicates background processing.' },
+  { id: 'bounce-activity', label: 'Bounce activity', animationId: 'bounce-loop', title: 'Bouncing activity markers', description: 'A repeating vertical cue shows lightweight activity.' },
+  { id: 'stagger-resolution', label: 'Staggered resolution', animationId: 'stagger-fade-up', title: 'Staggered loader resolution', description: 'Placeholder items resolve into content sequentially.' },
+  { id: 'scale-resolution', label: 'Scale resolution', animationId: 'stagger-scale-in', title: 'Scaling loader resolution', description: 'Loaded items scale into their final positions in sequence.' },
+]
 
 const SPINNERS = [
   { id: 'spinner-circle', label: 'Circle spinner', animationId: 'spinner-circle', cssClassName: 'anim-spinner-circle' },
@@ -9,6 +23,8 @@ const SPINNERS = [
 const SKELETON_ROWS = 3
 
 export default function Loaders() {
+  const [activeLoaderSection, setActiveLoaderSection] = useState(LOADER_SECTIONS[0].id)
+  const tabRefs = useRef([])
   const [loopKey, setLoopKey] = useState(0)
   const [buttonState, setButtonState] = useState('idle')
   const [showFullPage, setShowFullPage] = useState(false)
@@ -24,6 +40,34 @@ export default function Loaders() {
     setTimeout(() => setShowFullPage(false), 2200)
   }
 
+  function selectTab(index) {
+    const nextSection = LOADER_SECTIONS[index]
+    if (!nextSection) return
+
+    setActiveLoaderSection(nextSection.id)
+    tabRefs.current[index]?.focus()
+  }
+
+  function handleTabKeyDown(event, index) {
+    let nextIndex
+
+    if (event.key === 'ArrowRight') {
+      nextIndex = (index + 1) % LOADER_SECTIONS.length
+    } else if (event.key === 'ArrowLeft') {
+      nextIndex = (index - 1 + LOADER_SECTIONS.length) % LOADER_SECTIONS.length
+    } else if (event.key === 'Home') {
+      nextIndex = 0
+    } else if (event.key === 'End') {
+      nextIndex = LOADER_SECTIONS.length - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    event.stopPropagation()
+    selectTab(nextIndex)
+  }
+
   return (
     <section className="view">
       <header className="view__header">
@@ -34,7 +78,42 @@ export default function Loaders() {
         </p>
       </header>
 
-      <section className="demo-block">
+      <nav className="gallery-tabs" aria-label="Loading effect sections">
+        <div className="gallery-tabs__list" role="tablist" aria-orientation="horizontal">
+          {LOADER_SECTIONS.map((section, index) => {
+            const isActive = section.id === activeLoaderSection
+
+            return (
+              <button
+                className={`gallery-tabs__tab${isActive ? ' is-active' : ''}`}
+                id={`loaders-tab-${section.id}`}
+                key={section.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`loaders-panel-${section.id}`}
+                tabIndex={isActive ? 0 : -1}
+                ref={(element) => {
+                  tabRefs.current[index] = element
+                }}
+                onClick={() => setActiveLoaderSection(section.id)}
+                onKeyDown={(event) => handleTabKeyDown(event, index)}
+              >
+                {section.label}
+              </button>
+            )
+          })}
+        </div>
+      </nav>
+
+      <section
+        className="demo-block"
+        id="loaders-panel-spinner-dots"
+        role="tabpanel"
+        aria-labelledby="loaders-tab-spinner-dots"
+        tabIndex={0}
+        hidden={activeLoaderSection !== 'spinner-dots'}
+      >
         <div className="demo-block__head">
           <h3>Spinner &amp; dot loading</h3>
           <AnimationLabel
@@ -69,7 +148,14 @@ export default function Loaders() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="loaders-panel-pulse-loading"
+        role="tabpanel"
+        aria-labelledby="loaders-tab-pulse-loading"
+        tabIndex={0}
+        hidden={activeLoaderSection !== 'pulse-loading'}
+      >
         <div className="demo-block__head">
           <h3>Pulse loading</h3>
           <AnimationLabel animationIds={['pulse-dot', 'pulse-ring']} context="Loaders → Pulse loading" />
@@ -89,7 +175,14 @@ export default function Loaders() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="loaders-panel-skeleton-shimmer"
+        role="tabpanel"
+        aria-labelledby="loaders-tab-skeleton-shimmer"
+        tabIndex={0}
+        hidden={activeLoaderSection !== 'skeleton-shimmer'}
+      >
         <div className="demo-block__head">
           <h3>Skeleton &amp; shimmer loaders</h3>
           <AnimationLabel animationId="skeleton-shimmer" context="Loaders → Skeleton & shimmer loaders" />
@@ -111,7 +204,14 @@ export default function Loaders() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="loaders-panel-progress-indicators"
+        role="tabpanel"
+        aria-labelledby="loaders-tab-progress-indicators"
+        tabIndex={0}
+        hidden={activeLoaderSection !== 'progress-indicators'}
+      >
         <div className="demo-block__head">
           <h3>Progress indicators</h3>
           <AnimationLabel
@@ -133,7 +233,14 @@ export default function Loaders() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="loaders-panel-button-loading"
+        role="tabpanel"
+        aria-labelledby="loaders-tab-button-loading"
+        tabIndex={0}
+        hidden={activeLoaderSection !== 'button-loading'}
+      >
         <div className="demo-block__head">
           <h3>Button loading state</h3>
           <AnimationLabel animationId="button-loading-spin" context="Loaders → Button loading state" />
@@ -151,7 +258,14 @@ export default function Loaders() {
         </div>
       </section>
 
-      <section className="demo-block">
+      <section
+        className="demo-block"
+        id="loaders-panel-full-page-loading"
+        role="tabpanel"
+        aria-labelledby="loaders-tab-full-page-loading"
+        tabIndex={0}
+        hidden={activeLoaderSection !== 'full-page-loading'}
+      >
         <div className="demo-block__head">
           <h3>Full-page loading screen</h3>
           <AnimationLabel
@@ -179,6 +293,20 @@ export default function Loaders() {
           )}
         </div>
       </section>
+
+      {LOADER_SECTIONS.slice(6).map((section) => (
+        <EffectShowcasePanel
+          active={activeLoaderSection === section.id}
+          animationId={section.animationId}
+          context={`Loading Effects → ${section.title}`}
+          description={section.description}
+          id={section.id}
+          idPrefix="loaders"
+          key={section.id}
+          kind="loader"
+          title={section.title}
+        />
+      ))}
     </section>
   )
 }

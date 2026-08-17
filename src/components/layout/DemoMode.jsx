@@ -33,7 +33,11 @@ export default function DemoMode({ activeSection, onSelectSection, onExit, child
         </button>
       </header>
 
-      <main className="demo-mode__content">
+      <main
+        className={`demo-mode__content${
+          activeSection === 'gallery' ? ' demo-mode__content--gallery' : ''
+        }`}
+      >
         <h1 className="demo-mode__title">{activeLabel}</h1>
         {children}
       </main>

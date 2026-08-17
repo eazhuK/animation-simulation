@@ -8,6 +8,11 @@ import Tables from './components/views/Tables.jsx'
 import Modals from './components/views/Modals.jsx'
 import Pages from './components/views/Pages.jsx'
 import Loaders from './components/views/Loaders.jsx'
+import ThreeDTransformations from './components/views/ThreeDTransformations.jsx'
+import DataVisualizationMotion from './components/views/DataVisualizationMotion.jsx'
+import NavigationMotion from './components/views/NavigationMotion.jsx'
+import TextBrandMotion from './components/views/TextBrandMotion.jsx'
+import VisualFoundationGallery from './components/views/VisualFoundationGallery.jsx'
 import Favourites from './components/views/Favourites.jsx'
 import { SECTIONS, DEFAULT_SECTION_ID } from './data/sections.js'
 
@@ -19,6 +24,11 @@ const VIEW_COMPONENTS = {
   modals: Modals,
   pages: Pages,
   loaders: Loaders,
+  'three-d': ThreeDTransformations,
+  'data-motion': DataVisualizationMotion,
+  'navigation-motion': NavigationMotion,
+  'text-brand-motion': TextBrandMotion,
+  'visual-foundation': VisualFoundationGallery,
   favourites: Favourites,
 }
 
@@ -54,7 +64,11 @@ function App() {
         <header className="app-header">
           <h1>{activeLabel}</h1>
         </header>
-        <main className="app-main__content">
+        <main
+          className={`app-main__content${
+            activeSection === 'gallery' ? ' app-main__content--gallery' : ''
+          }`}
+        >
           <ActiveViewComponent />
         </main>
       </div>

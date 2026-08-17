@@ -1,0 +1,9 @@
+/**
+ * Tailwind CSS, scoped to the Visual Foundation Gallery module only.
+ * Deliberately skips the `preflight` (base reset) layer so it cannot alter
+ * the existing plain-CSS showcase (Gallery/Cards/Forms/etc.) — only the
+ * `theme` and `utilities` layers are pulled in, and only classes actually
+ * used inside src/components/visual-foundation/** get generated.
+ */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);

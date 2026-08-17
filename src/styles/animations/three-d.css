@@ -1,0 +1,45 @@
+/* Dedicated CSS-only perspective transformations used by the 3D prototype and Gallery. */
+
+.anim-perspective-tilt-3d,
+.anim-flip-reveal-3d,
+.anim-cube-transition-3d,
+.anim-spatial-carousel-3d {
+  transform-style: preserve-3d;
+  transition-property: transform;
+}
+
+.anim-perspective-tilt-3d:hover,
+.anim-perspective-tilt-3d.is-previewing {
+  transform: perspective(800px) rotateX(-10deg) rotateY(16deg) translateZ(24px);
+}
+
+.anim-flip-reveal-3d:hover,
+.anim-flip-reveal-3d.is-previewing {
+  transform: perspective(800px) rotateY(180deg);
+}
+
+.anim-cube-transition-3d:hover,
+.anim-cube-transition-3d.is-previewing {
+  transform: perspective(800px) rotateX(-18deg) rotateY(46deg) scale(0.92);
+}
+
+@keyframes anim-layered-depth-3d-kf {
+  from {
+    opacity: 0;
+    transform: perspective(800px) translateZ(-140px) rotateX(18deg) scale(0.84);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(800px) translateZ(20px) rotateX(0) scale(1);
+  }
+}
+
+.anim-layered-depth-3d {
+  animation-name: anim-layered-depth-3d-kf;
+  transform-style: preserve-3d;
+}
+
+.anim-spatial-carousel-3d:hover,
+.anim-spatial-carousel-3d.is-previewing {
+  transform: perspective(800px) rotateY(-48deg) translateZ(16px);
+}

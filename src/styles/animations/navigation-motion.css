@@ -1,0 +1,50 @@
+/* Catalogue-level motion primitives for navigation and menu previews. */
+
+.anim-sidebar-expand-motion,
+.anim-mega-menu-reveal,
+.anim-mobile-menu-morph,
+.anim-tab-indicator-slide,
+.anim-floating-dock-magnify {
+  transition-property: transform, opacity;
+}
+
+.anim-sidebar-expand-motion:hover,
+.anim-sidebar-expand-motion.is-previewing {
+  transform: translateX(18px);
+}
+
+.anim-mega-menu-reveal:hover,
+.anim-mega-menu-reveal.is-previewing {
+  opacity: 1;
+  transform: translateY(12px) scale(0.96);
+}
+
+.anim-mobile-menu-morph:hover,
+.anim-mobile-menu-morph.is-previewing {
+  transform: rotate(90deg) scale(0.9);
+}
+
+.anim-tab-indicator-slide:hover,
+.anim-tab-indicator-slide.is-previewing {
+  transform: translateX(24px) scaleX(1.18);
+}
+
+@keyframes anim-breadcrumb-transition-kf {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.anim-breadcrumb-transition {
+  animation-name: anim-breadcrumb-transition-kf;
+}
+
+.anim-floating-dock-magnify:hover,
+.anim-floating-dock-magnify.is-previewing {
+  transform: translateY(-8px) scale(1.18);
+}

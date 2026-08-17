@@ -10,6 +10,11 @@ export const SECTIONS = [
   { id: 'modals', label: 'Modals' },
   { id: 'pages', label: 'Pages' },
   { id: 'loaders', label: 'Loading Effects' },
+  { id: 'three-d', label: '3D Transformations' },
+  { id: 'data-motion', label: 'Data Visualization Motion' },
+  { id: 'navigation-motion', label: 'Navigation & Menu Motion' },
+  { id: 'text-brand-motion', label: 'Text & Brand Motion' },
+  { id: 'visual-foundation', label: 'Visual Foundation Gallery' },
   { id: 'favourites', label: 'Selected / Favourites' },
 ]
 

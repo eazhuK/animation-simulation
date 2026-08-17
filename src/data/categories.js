@@ -1,5 +1,5 @@
 /**
- * Animation categories, matching "Animation Categories" in docs/requirement.md exactly.
+ * Animation categories: the requirement's original set plus approved prototype expansions.
  * `id` is the stable key used on animation entries and for routing/filtering;
  * `label` is the display name.
  */
@@ -22,6 +22,10 @@ export const CATEGORIES = [
   { id: 'table-list', label: 'Table / List transitions' },
   { id: 'button-feedback', label: 'Button feedback animations' },
   { id: 'notification-toast', label: 'Notification / Toast animations' },
+  { id: 'three-d', label: '3D transformations' },
+  { id: 'data-motion', label: 'Data visualization motion' },
+  { id: 'navigation-motion', label: 'Navigation / Menu motion' },
+  { id: 'text-brand-motion', label: 'Text / Brand motion' },
 ]
 
 export const CATEGORY_MAP = Object.fromEntries(CATEGORIES.map((c) => [c.id, c]))
