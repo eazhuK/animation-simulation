@@ -1,8 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { CONFIGURATION_STEP_IDS } from '../data/configurationSteps.js'
 
-const FAVOURITES_KEY = 'ui-animation-catalogue:favourites'
-const USAGE_KEY = 'ui-animation-catalogue:usage'
-const WORKSPACE_KEY = 'ui-animation-catalogue:workspace:v1'
+const CONFIGURATIONS_KEY = 'ui-animation-catalogue:configurations:v2'
+const LEGACY_FAVOURITES_KEY = 'ui-animation-catalogue:favourites'
+const LEGACY_USAGE_KEY = 'ui-animation-catalogue:usage'
+const LEGACY_WORKSPACE_KEY = 'ui-animation-catalogue:workspace:v1'
+const LEGACY_VISUAL_KEY = 'ui-animation-catalogue:visual-foundation-favourites'
 
 const DEFAULT_SETTINGS = {
   durationMs: 500,
@@ -25,153 +28,436 @@ function writeJSON(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value))
   } catch {
-    // The catalogue remains usable if private browsing or storage limits block persistence.
+    // Keep the current session usable if browser storage is unavailable.
   }
+}
+
+function now() {
+  return new Date().toISOString()
+}
+
+function createId() {
+  return globalThis.crypto?.randomUUID?.() ?? `configuration-${Date.now()}-${Math.random()}`
 }
 
 function normaliseSettings(settings = {}) {
   return {
     durationMs: Number(settings.durationMs) || DEFAULT_SETTINGS.durationMs,
-    delayMs: Number.isFinite(Number(settings.delayMs)) ? Number(settings.delayMs) : DEFAULT_SETTINGS.delayMs,
+    delayMs: Number.isFinite(Number(settings.delayMs))
+      ? Number(settings.delayMs)
+      : DEFAULT_SETTINGS.delayMs,
     speed: Number(settings.speed) || DEFAULT_SETTINGS.speed,
   }
 }
 
-function readInitialWorkspace() {
-  const stored = readJSON(WORKSPACE_KEY, null)
-  if (stored && typeof stored === 'object' && !Array.isArray(stored)) return stored
+function normaliseConfiguration(configuration) {
+  return {
+    id: configuration.id,
+    clientName: configuration.clientName || 'Unnamed client',
+    configurationName: configuration.configurationName || 'UI animation configuration',
+    notes: configuration.notes || '',
+    status: configuration.status === 'saved' ? 'saved' : 'draft',
+    createdAt: configuration.createdAt || now(),
+    updatedAt: configuration.updatedAt || configuration.createdAt || now(),
+    completedAt: configuration.completedAt || null,
+    visitedSteps: Array.isArray(configuration.visitedSteps) ? configuration.visitedSteps : [],
+    selections: configuration.selections || {},
+    visualThemes: configuration.visualThemes || {},
+    usage: configuration.usage || {},
+  }
+}
 
-  const migrated = {}
-  readJSON(FAVOURITES_KEY, []).forEach((id) => {
-    migrated[id] = {
-      status: 'saved',
-      settings: DEFAULT_SETTINGS,
-      updatedAt: null,
+function readInitialStore() {
+  const stored = readJSON(CONFIGURATIONS_KEY, null)
+  if (stored?.configurations && typeof stored.configurations === 'object') {
+    const configurations = Object.fromEntries(
+      Object.entries(stored.configurations).map(([id, configuration]) => [
+        id,
+        normaliseConfiguration({ ...configuration, id }),
+      ])
+    )
+    return {
+      configurations,
+      activeConfigurationId: configurations[stored.activeConfigurationId]
+        ? stored.activeConfigurationId
+        : null,
+    }
+  }
+
+  const legacyWorkspace = readJSON(LEGACY_WORKSPACE_KEY, {})
+  const legacyFavouriteIds = readJSON(LEGACY_FAVOURITES_KEY, [])
+  const legacyUsage = readJSON(LEGACY_USAGE_KEY, {})
+  const legacyVisualIds = readJSON(LEGACY_VISUAL_KEY, [])
+  const legacyIds = new Set([...Object.keys(legacyWorkspace), ...legacyFavouriteIds])
+
+  if (legacyIds.size === 0 && legacyVisualIds.length === 0) {
+    return { configurations: {}, activeConfigurationId: null }
+  }
+
+  const id = createId()
+  const timestamp = now()
+  const selections = {}
+  legacyIds.forEach((animationId) => {
+    selections[animationId] = {
+      settings: normaliseSettings(legacyWorkspace[animationId]?.settings),
+      selectedAt: legacyWorkspace[animationId]?.updatedAt || timestamp,
     }
   })
-  return migrated
+  const visualThemes = Object.fromEntries(
+    legacyVisualIds.map((themeId) => [themeId, { overrides: {}, selectedAt: timestamp }])
+  )
+
+  return {
+    activeConfigurationId: id,
+    configurations: {
+      [id]: normaliseConfiguration({
+        id,
+        clientName: 'Imported client',
+        configurationName: 'Imported configuration',
+        status: 'draft',
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        selections,
+        visualThemes,
+        usage: legacyUsage,
+      }),
+    },
+  }
+}
+
+function progressFor(configuration) {
+  const visited = new Set(configuration?.visitedSteps ?? [])
+  const completed = CONFIGURATION_STEP_IDS.filter((stepId) => visited.has(stepId)).length
+  return {
+    completed,
+    total: CONFIGURATION_STEP_IDS.length,
+    percent: Math.round((completed / CONFIGURATION_STEP_IDS.length) * 100),
+    missingSteps: CONFIGURATION_STEP_IDS.filter((stepId) => !visited.has(stepId)),
+  }
 }
 
 /**
- * Frontend-only workspace state. Saved animations, drafts, preview settings, and usage context
- * are persisted in localStorage so the dashboard survives refreshes without a backend.
+ * Multi-client, frontend-only configuration store. Every client configuration owns its own
+ * selections, visual themes, step progress, usage history, and draft/saved lifecycle.
  */
 export function SelectionProvider({ children }) {
-  const [workspace, setWorkspace] = useState(readInitialWorkspace)
-  const [usage, setUsage] = useState(() => {
-    const stored = readJSON(USAGE_KEY, {})
-    const map = new Map()
-    Object.entries(stored).forEach(([id, contexts]) => map.set(id, new Set(contexts)))
-    return map
-  })
-
-  const favourites = useMemo(
-    () => new Set(Object.keys(workspace).filter((id) => workspace[id]?.status === 'saved')),
-    [workspace]
-  )
-  const drafts = useMemo(
-    () => new Set(Object.keys(workspace).filter((id) => workspace[id]?.status === 'draft')),
-    [workspace]
-  )
+  const [store, setStore] = useState(readInitialStore)
 
   useEffect(() => {
-    writeJSON(WORKSPACE_KEY, workspace)
-    writeJSON(FAVOURITES_KEY, [...favourites])
-  }, [workspace, favourites])
+    writeJSON(CONFIGURATIONS_KEY, store)
+  }, [store])
 
-  useEffect(() => {
-    const plain = {}
-    usage.forEach((contexts, id) => {
-      plain[id] = [...contexts]
-    })
-    writeJSON(USAGE_KEY, plain)
-  }, [usage])
+  const configurations = useMemo(
+    () =>
+      Object.values(store.configurations).sort((a, b) =>
+        (b.updatedAt ?? '').localeCompare(a.updatedAt ?? '')
+      ),
+    [store.configurations]
+  )
 
-  const setAnimationStatus = useCallback((id, status, settings) => {
-    if (!id) return
-    setWorkspace((previous) => {
-      const current = previous[id]
+  const activeConfiguration =
+    store.configurations[store.activeConfigurationId] ?? null
+
+  const updateActiveConfiguration = useCallback((updater) => {
+    setStore((previous) => {
+      const id = previous.activeConfigurationId
+      const current = previous.configurations[id]
+      if (!current) return previous
+      const updated = updater(current)
+      if (updated === current) return previous
       return {
         ...previous,
-        [id]: {
-          status,
-          settings: normaliseSettings(settings ?? current?.settings),
-          updatedAt: new Date().toISOString(),
+        configurations: {
+          ...previous.configurations,
+          [id]: updated,
         },
       }
     })
   }, [])
 
-  const saveAnimation = useCallback(
-    (id, settings) => setAnimationStatus(id, 'saved', settings),
-    [setAnimationStatus]
-  )
+  const createConfiguration = useCallback(({ clientName, configurationName, notes = '' }) => {
+    const id = createId()
+    const timestamp = now()
+    const configuration = normaliseConfiguration({
+      id,
+      clientName: clientName.trim(),
+      configurationName: configurationName.trim(),
+      notes: notes.trim(),
+      status: 'draft',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    })
+    setStore((previous) => ({
+      activeConfigurationId: id,
+      configurations: { ...previous.configurations, [id]: configuration },
+    }))
+    return id
+  }, [])
 
-  const saveDraft = useCallback(
-    (id, settings) => setAnimationStatus(id, 'draft', settings),
-    [setAnimationStatus]
-  )
+  const activateConfiguration = useCallback((id) => {
+    setStore((previous) =>
+      previous.configurations[id]
+        ? { ...previous, activeConfigurationId: id }
+        : previous
+    )
+  }, [])
 
-  const removeAnimation = useCallback((id) => {
-    setWorkspace((previous) => {
-      if (!previous[id]) return previous
-      const next = { ...previous }
-      delete next[id]
-      return next
+  const closeConfiguration = useCallback(() => {
+    setStore((previous) => ({ ...previous, activeConfigurationId: null }))
+  }, [])
+
+  const deleteConfiguration = useCallback((id) => {
+    setStore((previous) => {
+      if (!previous.configurations[id]) return previous
+      const configurations = { ...previous.configurations }
+      delete configurations[id]
+      return {
+        configurations,
+        activeConfigurationId:
+          previous.activeConfigurationId === id ? null : previous.activeConfigurationId,
+      }
     })
   }, [])
+
+  const updateConfigurationDetails = useCallback(
+    (details) => {
+      updateActiveConfiguration((current) => ({
+        ...current,
+        ...details,
+        status: 'draft',
+        completedAt: null,
+        updatedAt: now(),
+      }))
+    },
+    [updateActiveConfiguration]
+  )
+
+  const markStepVisited = useCallback(
+    (stepId) => {
+      if (!CONFIGURATION_STEP_IDS.includes(stepId)) return
+      updateActiveConfiguration((current) => {
+        if (current.visitedSteps.includes(stepId)) return current
+        return {
+          ...current,
+          visitedSteps: [...current.visitedSteps, stepId],
+          updatedAt: now(),
+        }
+      })
+    },
+    [updateActiveConfiguration]
+  )
+
+  const selectAnimation = useCallback(
+    (id, settings) => {
+      if (!id) return
+      updateActiveConfiguration((current) => ({
+        ...current,
+        status: 'draft',
+        completedAt: null,
+        updatedAt: now(),
+        selections: {
+          ...current.selections,
+          [id]: {
+            settings: normaliseSettings(settings ?? current.selections[id]?.settings),
+            selectedAt: current.selections[id]?.selectedAt || now(),
+          },
+        },
+      }))
+    },
+    [updateActiveConfiguration]
+  )
+
+  const removeAnimation = useCallback(
+    (id) => {
+      updateActiveConfiguration((current) => {
+        if (!current.selections[id]) return current
+        const selections = { ...current.selections }
+        delete selections[id]
+        return {
+          ...current,
+          selections,
+          status: 'draft',
+          completedAt: null,
+          updatedAt: now(),
+        }
+      })
+    },
+    [updateActiveConfiguration]
+  )
+
+  const registerUsage = useCallback(
+    (id, context) => {
+      if (!id || !context) return
+      updateActiveConfiguration((current) => {
+        const contexts = current.usage[id] ?? []
+        if (contexts.includes(context)) return current
+        return {
+          ...current,
+          usage: { ...current.usage, [id]: [...contexts, context] },
+        }
+      })
+    },
+    [updateActiveConfiguration]
+  )
+
+  const toggleVisualTheme = useCallback(
+    (themeId, overrides = {}) => {
+      updateActiveConfiguration((current) => {
+        const visualThemes = { ...current.visualThemes }
+        if (visualThemes[themeId]) {
+          delete visualThemes[themeId]
+        } else {
+          visualThemes[themeId] = { overrides, selectedAt: now() }
+        }
+        return {
+          ...current,
+          visualThemes,
+          status: 'draft',
+          completedAt: null,
+          updatedAt: now(),
+        }
+      })
+    },
+    [updateActiveConfiguration]
+  )
+
+  const updateVisualThemeSettings = useCallback(
+    (themeId, overrides) => {
+      updateActiveConfiguration((current) => {
+        if (!current.visualThemes[themeId]) return current
+        return {
+          ...current,
+          status: 'draft',
+          completedAt: null,
+          updatedAt: now(),
+          visualThemes: {
+            ...current.visualThemes,
+            [themeId]: { ...current.visualThemes[themeId], overrides },
+          },
+        }
+      })
+    },
+    [updateActiveConfiguration]
+  )
+
+  const saveConfigurationDraft = useCallback(() => {
+    updateActiveConfiguration((current) => ({
+      ...current,
+      status: 'draft',
+      completedAt: null,
+      updatedAt: now(),
+    }))
+  }, [updateActiveConfiguration])
+
+  const completeConfiguration = useCallback(() => {
+    if (!activeConfiguration) return { ok: false, reason: 'No active configuration.' }
+    const progress = progressFor(activeConfiguration)
+    if (progress.missingSteps.length > 0) {
+      return { ok: false, reason: 'Visit every configuration step first.', ...progress }
+    }
+    const selectionCount =
+      Object.keys(activeConfiguration.selections).length +
+      Object.keys(activeConfiguration.visualThemes).length
+    if (selectionCount === 0) {
+      return { ok: false, reason: 'Select at least one animation or visual theme.' }
+    }
+    const timestamp = now()
+    updateActiveConfiguration((current) => ({
+      ...current,
+      status: 'saved',
+      completedAt: timestamp,
+      updatedAt: timestamp,
+    }))
+    return { ok: true }
+  }, [activeConfiguration, updateActiveConfiguration])
+
+  const favourites = useMemo(
+    () => new Set(Object.keys(activeConfiguration?.selections ?? {})),
+    [activeConfiguration]
+  )
+  const visualThemeIds = useMemo(
+    () => new Set(Object.keys(activeConfiguration?.visualThemes ?? {})),
+    [activeConfiguration]
+  )
+
+  const getConfiguration = useCallback(
+    (id) => store.configurations[id] ?? null,
+    [store.configurations]
+  )
+  const getSelection = useCallback(
+    (id) => {
+      const selection = activeConfiguration?.selections[id]
+      return selection ? { ...selection, status: 'selected' } : null
+    },
+    [activeConfiguration]
+  )
+  const getUsage = useCallback(
+    (id) => activeConfiguration?.usage[id] ?? [],
+    [activeConfiguration]
+  )
+  const getConfigurationProgress = useCallback((configuration) => progressFor(configuration), [])
 
   const toggleFavourite = useCallback(
     (id) => {
-      if (workspace[id]?.status === 'saved') {
-        removeAnimation(id)
-      } else {
-        saveAnimation(id, workspace[id]?.settings)
-      }
+      if (favourites.has(id)) removeAnimation(id)
+      else selectAnimation(id)
     },
-    [workspace, removeAnimation, saveAnimation]
+    [favourites, removeAnimation, selectAnimation]
   )
-
-  const registerUsage = useCallback((id, context) => {
-    if (!id || !context) return
-    setUsage((previous) => {
-      const existing = previous.get(id)
-      if (existing?.has(context)) return previous
-      const next = new Map(previous)
-      next.set(id, new Set(existing).add(context))
-      return next
-    })
-  }, [])
-
-  const getSelection = useCallback((id) => workspace[id] ?? null, [workspace])
-  const getUsage = useCallback((id) => Array.from(usage.get(id) ?? []), [usage])
 
   const value = useMemo(
     () => ({
-      workspace,
+      configurations,
+      activeConfiguration,
+      createConfiguration,
+      activateConfiguration,
+      closeConfiguration,
+      deleteConfiguration,
+      updateConfigurationDetails,
+      markStepVisited,
+      saveConfigurationDraft,
+      completeConfiguration,
+      getConfiguration,
+      getConfigurationProgress,
+      workspace: activeConfiguration?.selections ?? {},
       favourites,
-      drafts,
+      drafts: new Set(),
+      visualThemeIds,
       isFavourite: (id) => favourites.has(id),
-      isDraft: (id) => drafts.has(id),
+      isDraft: () => false,
       getSelection,
-      saveAnimation,
-      saveDraft,
+      saveAnimation: selectAnimation,
+      saveDraft: selectAnimation,
       removeAnimation,
       toggleFavourite,
       registerUsage,
       getUsage,
+      toggleVisualTheme,
+      updateVisualThemeSettings,
     }),
     [
-      workspace,
+      configurations,
+      activeConfiguration,
+      createConfiguration,
+      activateConfiguration,
+      closeConfiguration,
+      deleteConfiguration,
+      updateConfigurationDetails,
+      markStepVisited,
+      saveConfigurationDraft,
+      completeConfiguration,
+      getConfiguration,
+      getConfigurationProgress,
       favourites,
-      drafts,
+      visualThemeIds,
       getSelection,
-      saveAnimation,
-      saveDraft,
+      selectAnimation,
       removeAnimation,
       toggleFavourite,
       registerUsage,
       getUsage,
+      toggleVisualTheme,
+      updateVisualThemeSettings,
     ]
   )
 

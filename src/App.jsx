@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Sidebar from './components/layout/Sidebar.jsx'
-import DemoMode from './components/layout/DemoMode.jsx'
+import ConfigurationWorkflow from './components/layout/ConfigurationWorkflow.jsx'
+import Dashboard from './components/views/Dashboard.jsx'
 import Gallery from './components/views/Gallery.jsx'
 import Cards from './components/views/Cards.jsx'
 import Forms from './components/views/Forms.jsx'
@@ -13,12 +14,9 @@ import DataVisualizationMotion from './components/views/DataVisualizationMotion.
 import NavigationMotion from './components/views/NavigationMotion.jsx'
 import TextBrandMotion from './components/views/TextBrandMotion.jsx'
 import VisualFoundationGallery from './components/views/VisualFoundationGallery.jsx'
-import Favourites from './components/views/Favourites.jsx'
-import Dashboard from './components/views/Dashboard.jsx'
-import SavedCategories from './components/views/SavedCategories.jsx'
-import Drafts from './components/views/Drafts.jsx'
+import ConfigurationReport from './components/views/ConfigurationReport.jsx'
 import { SECTIONS, DEFAULT_SECTION_ID } from './data/sections.js'
-import { ANIMATIONS_BY_ID } from './data/animations.js'
+import { CONFIGURATION_STEPS, CONFIGURATION_STEP_IDS } from './data/configurationSteps.js'
 import { useSelection } from './context/SelectionContext.jsx'
 
 const VIEW_COMPONENTS = {
@@ -35,42 +33,47 @@ const VIEW_COMPONENTS = {
   'navigation-motion': NavigationMotion,
   'text-brand-motion': TextBrandMotion,
   'visual-foundation': VisualFoundationGallery,
-  'saved-categories': SavedCategories,
-  drafts: Drafts,
-  favourites: Favourites,
+  'configuration-report': ConfigurationReport,
 }
 
 function App() {
   const [activeSection, setActiveSection] = useState(DEFAULT_SECTION_ID)
-  const [isDemoMode, setIsDemoMode] = useState(false)
-  const { favourites, drafts } = useSelection()
+  const {
+    configurations,
+    activeConfiguration,
+    activateConfiguration,
+    getConfiguration,
+    markStepVisited,
+  } = useSelection()
 
-  const sectionCounts = useMemo(
-    () => ({
-      'saved-categories': new Set(
-        Array.from(favourites).map((id) => ANIMATIONS_BY_ID[id]?.category).filter(Boolean)
-      ).size,
-      drafts: drafts.size,
-      favourites: favourites.size,
-    }),
-    [favourites, drafts]
-  )
+  const isConfigurationStep = CONFIGURATION_STEP_IDS.includes(activeSection)
+
+  useEffect(() => {
+    if (activeConfiguration && isConfigurationStep) markStepVisited(activeSection)
+  }, [activeConfiguration, activeSection, isConfigurationStep, markStepVisited])
 
   const activeLabel =
-    SECTIONS.find((section) => section.id === activeSection)?.label ?? ''
+    activeSection === 'configuration-report'
+      ? 'Configuration Report'
+      : SECTIONS.find((section) => section.id === activeSection)?.label ?? ''
 
-  const ActiveViewComponent = VIEW_COMPONENTS[activeSection]
+  const ActiveViewComponent = VIEW_COMPONENTS[activeSection] ?? Dashboard
 
-  if (isDemoMode) {
-    return (
-      <DemoMode
-        activeSection={activeSection}
-        onSelectSection={setActiveSection}
-        onExit={() => setIsDemoMode(false)}
-      >
-        <ActiveViewComponent onNavigate={setActiveSection} />
-      </DemoMode>
-    )
+  function startConfiguration(id) {
+    const configuration = getConfiguration(id)
+    activateConfiguration(id)
+    if (!configuration) {
+      setActiveSection(CONFIGURATION_STEPS[0].id)
+      return
+    }
+    const visited = new Set(configuration.visitedSteps)
+    const nextStep = CONFIGURATION_STEPS.find((step) => !visited.has(step.id))
+    setActiveSection(nextStep?.id ?? CONFIGURATION_STEPS[0].id)
+  }
+
+  function viewReport(id) {
+    if (id) activateConfiguration(id)
+    setActiveSection('configuration-report')
   }
 
   return (
@@ -78,8 +81,9 @@ function App() {
       <Sidebar
         activeSection={activeSection}
         onSelectSection={setActiveSection}
-        onStartDemo={() => setIsDemoMode(true)}
-        sectionCounts={sectionCounts}
+        onCreateConfiguration={() => setActiveSection('dashboard')}
+        activeConfiguration={activeConfiguration}
+        configurationCount={configurations.length}
       />
       <div className="app-main">
         <header className="app-header">
@@ -90,7 +94,20 @@ function App() {
             activeSection === 'gallery' ? ' app-main__content--gallery' : ''
           }`}
         >
-          <ActiveViewComponent onNavigate={setActiveSection} />
+          {activeConfiguration && isConfigurationStep && (
+            <ConfigurationWorkflow
+              activeSection={activeSection}
+              onSelectStep={setActiveSection}
+              onDashboard={() => setActiveSection('dashboard')}
+              onReport={() => setActiveSection('configuration-report')}
+            />
+          )}
+          <ActiveViewComponent
+            key={`${activeConfiguration?.id ?? 'browse'}-${activeSection}`}
+            onNavigate={setActiveSection}
+            onStartConfiguration={startConfiguration}
+            onViewReport={viewReport}
+          />
         </main>
       </div>
     </div>

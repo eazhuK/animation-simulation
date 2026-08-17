@@ -10,7 +10,14 @@ import CompareView from './CompareView.jsx'
 const MAX_COMPARE = 3
 
 export default function VisualFoundationApp() {
-  const { favourites, isFavourite, toggleFavourite } = useVisualFoundation()
+  const {
+    favourites,
+    isFavourite,
+    toggleFavourite,
+    selectionEnabled,
+    updateFavouriteSettings,
+    getFavouriteSettings,
+  } = useVisualFoundation()
   const [mode, setMode] = useState('gallery') // 'gallery' | 'detail' | 'compare'
   const [selectedId, setSelectedId] = useState(null)
   const [overrides, setOverrides] = useState({})
@@ -31,7 +38,7 @@ export default function VisualFoundationApp() {
 
   const openDetail = (id) => {
     setSelectedId(id)
-    setOverrides({})
+    setOverrides(getFavouriteSettings(id))
     setMode('detail')
   }
 
@@ -43,6 +50,16 @@ export default function VisualFoundationApp() {
     })
   }
 
+  const changeOverride = (key, value) => {
+    setOverrides((previous) => {
+      const next = { ...previous, [key]: value }
+      if (selectedTheme && isFavourite(selectedTheme.id)) {
+        updateFavouriteSettings(selectedTheme.id, next)
+      }
+      return next
+    })
+  }
+
   return (
     <div className="flex flex-col gap-6 rounded-3xl bg-slate-950 p-5 sm:p-6">
       <header className="flex flex-col gap-3">
@@ -51,6 +68,11 @@ export default function VisualFoundationApp() {
           <p className="text-sm text-slate-400">
             30 premium visual directions on real page content — pick a design foundation for the product.
           </p>
+          {!selectionEnabled && (
+            <p className="mt-2 text-xs font-medium text-amber-300">
+              Open or create a client configuration to save a visual direction.
+            </p>
+          )}
         </div>
 
         {mode !== 'detail' && (
@@ -146,9 +168,10 @@ export default function VisualFoundationApp() {
                   <h3 className="text-base font-bold text-white">{selectedTheme.name}</h3>
                   <button
                     type="button"
-                    onClick={() => toggleFavourite(selectedTheme.id)}
+                    onClick={() => toggleFavourite(selectedTheme.id, overrides)}
+                    disabled={!selectionEnabled}
                     aria-pressed={isFavourite(selectedTheme.id)}
-                    className={`text-lg leading-none ${isFavourite(selectedTheme.id) ? 'text-amber-300' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`text-lg leading-none disabled:cursor-not-allowed disabled:opacity-40 ${isFavourite(selectedTheme.id) ? 'text-amber-300' : 'text-slate-500 hover:text-slate-300'}`}
                   >
                     {isFavourite(selectedTheme.id) ? '★' : '☆'}
                   </button>
@@ -182,8 +205,11 @@ export default function VisualFoundationApp() {
           <ControlPanel
             values={{ ...selectedTheme.defaultControls, ...overrides }}
             defaults={selectedTheme.defaultControls}
-            onChange={(key, value) => setOverrides((prev) => ({ ...prev, [key]: value }))}
-            onReset={() => setOverrides({})}
+            onChange={changeOverride}
+            onReset={() => {
+              setOverrides({})
+              if (isFavourite(selectedTheme.id)) updateFavouriteSettings(selectedTheme.id, {})
+            }}
           />
         </div>
       )}

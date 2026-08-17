@@ -10,10 +10,11 @@ entry — and "Current state" below — before finishing a phase.
   now contains 128 CSS-only animations across 22 categories. Every client-demo navigation page
   from Cards through Text & Brand Motion exposes at least 10 compact tabbed examples, alongside
   the Gallery, Visual Foundation Gallery, and selection/favourites workflow.
-- The selection workflow now includes a frontend-only Dashboard, Saved Categories, and Draft
-  Mode. `SelectionContext` persists a versioned workspace record per animation (saved/draft
-  status plus duration/delay/speed) under `ui-animation-catalogue:workspace:v1`, migrates legacy
-  favourites automatically, and keeps all data in browser `localStorage` with no backend.
+- The selection workflow is now a multi-client configuration system. `SelectionContext` persists
+  isolated client records under `ui-animation-catalogue:configurations:v2`: configuration-level
+  Draft/Saved status, 12-step progress, animation timing selections, visual-theme overrides,
+  notes, and usage history. The v1 workspace and legacy favourites migrate into one draft client
+  configuration automatically. Everything remains browser-only `localStorage`; there is no backend.
 - Stack: Vite + React, **JavaScript** (JSX, not TS) — matches the scaffold's default template.
 - Folder layout:
   - `src/main.jsx` — entry point, imports `src/styles/global.css`.
@@ -318,3 +319,19 @@ default section; Saved Animations retains the existing summary/export workflow. 
 `npm run build`, `npm run lint`, and a temporary Playwright Core + system Chrome smoke test:
 900ms draft save, refresh restore, dashboard count, draft-to-saved promotion, category grouping,
 second refresh persistence, and zero console errors. Temporary test dependency was pruned.
+
+### Ad hoc addition — Multi-client configuration workflow and reports (2026-08-17)
+
+Superseded the single-workspace animation Draft/Saved model with client-scoped configurations.
+The dashboard now creates named client/configuration records and lists whole configurations in
+Drafts and Saved tabs. A 12-step controller covers Gallery, component-motion sections, and Visual
+Foundation; progress is recorded per client, and completion is blocked until every step is visited
+and at least one choice exists. Animation settings, usage contexts, selected visual themes, and
+theme-control overrides are isolated per client. `ConfigurationReport.jsx` provides a category-
+grouped report plus Markdown download and browser Print / Save PDF. The store key is
+`ui-animation-catalogue:configurations:v2`, with automatic migration from legacy selection keys.
+Removed the superseded Drafts, Saved Categories, and Favourites management views. Browser test
+created four clients, exercised the draft guard/tab, completed all 12 steps for each, verified one
+isolated timed selection per client, downloaded Markdown, reloaded persistence, and recorded zero
+console errors. Also fixed nested interactive HTML in Visual Foundation preview tiles exposed by
+the full-step test.

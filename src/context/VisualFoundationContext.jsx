@@ -1,48 +1,52 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-
-const FAVOURITES_KEY = 'ui-animation-catalogue:visual-foundation-favourites'
-
-function readJSON(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? JSON.parse(raw) : fallback
-  } catch {
-    return fallback
-  }
-}
+import { createContext, useCallback, useContext, useMemo } from 'react'
+import { useSelection } from './SelectionContext.jsx'
 
 const VisualFoundationContext = createContext(null)
 
-/** Persisted favourite theme ids for the Visual Foundation Gallery — kept separate from the animation catalogue's own favourites/localStorage key. */
+/** Visual-theme selections are scoped to the active client configuration. */
 export function VisualFoundationProvider({ children }) {
-  const [favourites, setFavourites] = useState(() => new Set(readJSON(FAVOURITES_KEY, [])))
+  const {
+    activeConfiguration,
+    visualThemeIds,
+    toggleVisualTheme,
+    updateVisualThemeSettings,
+  } = useSelection()
 
-  useEffect(() => {
-    localStorage.setItem(FAVOURITES_KEY, JSON.stringify([...favourites]))
-  }, [favourites])
+  const toggleFavourite = useCallback(
+    (id, overrides = {}) => {
+      if (activeConfiguration) toggleVisualTheme(id, overrides)
+    },
+    [activeConfiguration, toggleVisualTheme]
+  )
 
-  const toggleFavourite = useCallback((id) => {
-    setFavourites((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
-        next.add(id)
-      }
-      return next
-    })
-  }, [])
+  const getFavouriteSettings = useCallback(
+    (id) => activeConfiguration?.visualThemes[id]?.overrides ?? {},
+    [activeConfiguration]
+  )
 
   const value = useMemo(
-    () => ({ favourites, isFavourite: (id) => favourites.has(id), toggleFavourite }),
-    [favourites, toggleFavourite]
+    () => ({
+      favourites: visualThemeIds,
+      selectionEnabled: Boolean(activeConfiguration),
+      isFavourite: (id) => visualThemeIds.has(id),
+      toggleFavourite,
+      updateFavouriteSettings: updateVisualThemeSettings,
+      getFavouriteSettings,
+    }),
+    [
+      activeConfiguration,
+      visualThemeIds,
+      toggleFavourite,
+      updateVisualThemeSettings,
+      getFavouriteSettings,
+    ]
   )
 
   return <VisualFoundationContext.Provider value={value}>{children}</VisualFoundationContext.Provider>
 }
 
 export function useVisualFoundation() {
-  const ctx = useContext(VisualFoundationContext)
-  if (!ctx) throw new Error('useVisualFoundation must be used within a VisualFoundationProvider')
-  return ctx
+  const context = useContext(VisualFoundationContext)
+  if (!context) throw new Error('useVisualFoundation must be used within a VisualFoundationProvider')
+  return context
 }

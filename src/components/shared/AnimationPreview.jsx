@@ -17,7 +17,13 @@ const STAGGER_COUNT = 4
 
 export default function AnimationPreview({ animation, context }) {
   const { id, name, description, cssClassName, suitableFor, previewKind = 'enter' } = animation
-  const { getSelection, saveAnimation, saveDraft, removeAnimation, registerUsage } = useSelection()
+  const {
+    activeConfiguration,
+    getSelection,
+    saveAnimation,
+    removeAnimation,
+    registerUsage,
+  } = useSelection()
   const selection = getSelection(id)
 
   const [durationMs, setDurationMs] = useState(() => selection?.settings?.durationMs ?? 500)
@@ -61,12 +67,12 @@ export default function AnimationPreview({ animation, context }) {
           <h4 className="anim-card__title">{name}</h4>
           <p className="anim-card__desc">{description}</p>
         </div>
-        <span className={`anim-card__status anim-card__status--${selection?.status ?? 'new'}`}>
-          {selection?.status === 'saved'
-            ? 'Saved'
-            : selection?.status === 'draft'
-              ? 'Draft'
-              : 'Not saved'}
+        <span
+          className={`anim-card__status anim-card__status--${
+            !activeConfiguration ? 'disabled' : selection ? 'selected' : 'new'
+          }`}
+        >
+          {!activeConfiguration ? 'No client' : selection ? 'Selected' : 'Not selected'}
         </span>
       </header>
 
@@ -101,16 +107,10 @@ export default function AnimationPreview({ animation, context }) {
           <button
             type="button"
             className="anim-card__action anim-card__action--primary"
+            disabled={!activeConfiguration}
             onClick={() => saveAnimation(id, currentSettings)}
           >
-            {selection?.status === 'saved' ? '✓ Saved' : 'Save'}
-          </button>
-          <button
-            type="button"
-            className="anim-card__action"
-            onClick={() => saveDraft(id, currentSettings)}
-          >
-            {selection?.status === 'draft' ? '✓ Draft saved' : 'Save draft'}
+            {selection ? '✓ Update selection' : 'Select for client'}
           </button>
           {selection && (
             <button

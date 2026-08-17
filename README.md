@@ -26,13 +26,18 @@ npm run lint     # oxlint
 
 ## Tour of the views
 
-- **Dashboard** — frontend-only workspace summary showing saved animations, drafts, saved
-  categories, catalogue size, recent activity, and quick links into each collection.
+- **Client Dashboard** — create any number of named client configurations and manage them in
+  separate **Drafts** and **Saved** tabs. Each card shows required-step progress and selection
+  totals, and can continue the workflow or open its report.
+- **Guided configuration workflow** — each client visits 12 required steps, from Gallery through
+  Visual Foundation. Previous/Next controls, visited indicators, Save Draft, and Complete & Save
+  keep the journey explicit. Completion is blocked until every step is visited and at least one
+  animation or visual theme is selected.
 - **Gallery** — all 128 animations grouped by category (fade, slide, scale/zoom, rotate, flip,
   bounce, shake/wiggle, blur/focus, reveal/mask, stagger, loading, hover, page transitions,
   modal/popup, form field, table/list, button feedback, notification/toast, 3D transformations,
   data visualization motion, navigation/menu motion, and text/brand motion). Each entry has a live
-  preview, a Replay button, and Duration/Delay/Speed sliders.
+  preview, a Replay button, Duration/Delay/Speed sliders, and a client-scoped Select action.
 - **Cards** — entry directions, staggered grids, entrance effects, and hover interactions applied
   to real card layouts.
 - **Forms** — container entry, staggered field reveal, floating labels, focus glow, validation
@@ -55,15 +60,13 @@ npm run lint     # oxlint
   and call-to-action motion examples for presentation-focused screens.
 - **Visual Foundation Gallery** — visual-theme simulations with live presentation controls and
   side-by-side comparison.
-- **Saved Categories** — final animation choices grouped automatically by category, with actions
-  to move an item back to draft or remove it.
-- **Draft Mode** — unfinished animation choices with their Duration/Delay/Speed values restored,
-  ready to tune and promote to saved.
-- **Saved Animations** — every final choice grouped with where it was used, plus a
-  copyable/printable summary to share with the dev team.
+- **Configuration Report** — every draft or saved client configuration has a readable report
+  grouped by animation category, including timing settings, visual foundations, notes, and step
+  completion. Download it as Markdown or use Print / Save PDF.
 
-Saved and draft status, timing controls, and usage history persist across reloads in browser
-`localStorage`. No backend, account, or network storage is used.
+Client records, Draft/Saved status, progress, selections, timing controls, visual-theme overrides,
+and usage history persist across reloads in browser `localStorage`. Client data is isolated by
+configuration. No backend, account, or network storage is used.
 
 ## Notes
 

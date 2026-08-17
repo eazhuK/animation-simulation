@@ -3,9 +3,9 @@ import VisualFoundationApp from '../visual-foundation/VisualFoundationApp.jsx'
 import '../../styles/visual-foundation/tailwind.css'
 
 /**
- * Standalone "Visual Foundation Gallery" section — a 30-theme visual-style
- * simulator, entirely separate from the existing animation/transition
- * showcase. React + Tailwind CSS only; does not touch any other section.
+ * 30-theme visual-style simulator. Theme selections and control overrides are
+ * scoped to the active client configuration; rendering remains isolated from
+ * the plain-CSS animation showcase.
  */
 export default function VisualFoundationGallery() {
   return (

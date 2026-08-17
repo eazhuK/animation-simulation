@@ -10,7 +10,7 @@ import { useSelection } from '../../context/SelectionContext.jsx'
 export default function AnimationLabel({ animationId, animationIds, context }) {
   const ids = animationIds ?? (animationId ? [animationId] : [])
   const entries = ids.map((id) => ANIMATIONS_BY_ID[id]).filter(Boolean)
-  const { isFavourite, toggleFavourite, registerUsage } = useSelection()
+  const { activeConfiguration, isFavourite, toggleFavourite, registerUsage } = useSelection()
   const idsKey = entries.map((entry) => entry.id).join(',')
 
   useEffect(() => {
@@ -36,9 +36,16 @@ export default function AnimationLabel({ animationId, animationIds, context }) {
           <button
             type="button"
             className={`anim-label__fav ${isFavourite(entry.id) ? 'is-active' : ''}`}
+            disabled={!activeConfiguration}
             onClick={() => toggleFavourite(entry.id)}
             aria-pressed={isFavourite(entry.id)}
-            title={isFavourite(entry.id) ? 'Remove from selected animations' : 'Mark as selected'}
+            title={
+              !activeConfiguration
+                ? 'Create or open a client configuration first'
+                : isFavourite(entry.id)
+                  ? 'Remove from client configuration'
+                  : 'Select for client configuration'
+            }
           >
             {isFavourite(entry.id) ? '★' : '☆'}
           </button>

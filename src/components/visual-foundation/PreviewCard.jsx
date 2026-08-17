@@ -4,14 +4,21 @@ import { useVisualFoundation } from '../../context/VisualFoundationContext.jsx'
 
 /** One gallery tile: a scaled-down live render of the theme's real page (not a static image), plus name/description/tags and favourite/compare/open actions. */
 export default function PreviewCard({ theme, onOpen, compareChecked, onToggleCompare, compareDisabled }) {
-  const { isFavourite, toggleFavourite } = useVisualFoundation()
+  const { isFavourite, toggleFavourite, selectionEnabled } = useVisualFoundation()
   const favourited = isFavourite(theme.id)
 
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)] transition-transform duration-200 hover:-translate-y-1">
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => onOpen(theme.id)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            onOpen(theme.id)
+          }
+        }}
         className="relative block h-44 w-full overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
         aria-label={`Open ${theme.name} detail preview`}
       >
@@ -21,7 +28,7 @@ export default function PreviewCard({ theme, onOpen, compareChecked, onToggleCom
           </div>
         </ThemeStage>
         <span className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-      </button>
+      </div>
 
       <div className="flex flex-1 flex-col gap-2.5 p-4">
         <div className="flex items-start justify-between gap-2">
@@ -29,9 +36,16 @@ export default function PreviewCard({ theme, onOpen, compareChecked, onToggleCom
           <button
             type="button"
             onClick={() => toggleFavourite(theme.id)}
+            disabled={!selectionEnabled}
             aria-pressed={favourited}
-            aria-label={favourited ? `Remove ${theme.name} from favourites` : `Add ${theme.name} to favourites`}
-            className={`shrink-0 text-lg leading-none ${favourited ? 'text-amber-300' : 'text-slate-500 hover:text-slate-300'}`}
+            aria-label={
+              selectionEnabled
+                ? favourited
+                  ? `Remove ${theme.name} from configuration`
+                  : `Add ${theme.name} to configuration`
+                : 'Create or open a client configuration before selecting a theme'
+            }
+            className={`shrink-0 text-lg leading-none disabled:cursor-not-allowed disabled:opacity-40 ${favourited ? 'text-amber-300' : 'text-slate-500 hover:text-slate-300'}`}
           >
             {favourited ? '★' : '☆'}
           </button>

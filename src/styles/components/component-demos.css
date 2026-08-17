@@ -45,6 +45,11 @@
   color: var(--color-primary);
 }
 
+.anim-label__fav:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
 .chip--tiny {
   padding: 1px 8px;
   font-size: 0.65rem;
@@ -752,52 +757,10 @@ textarea.demo-field__input {
   width: 180px;
 }
 
-/* ---- Favourites / Selected Animations ------------------------------------ */
-
-.favourites-summary {
-  white-space: pre-wrap;
-  font-family: inherit;
-  font-size: var(--font-size-sm);
-  background: var(--color-surface-alt);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  color: var(--color-text);
-}
-
-.favourites-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-lg);
-}
-
-.favourites-item {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-}
-
-.favourites-item__meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-2xs);
-}
-
-.favourites-item__usage {
-  list-style: none;
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
 @media print {
   .sidebar,
   .app-header,
-  .demo-controls,
-  .favourites-grid {
+  .demo-controls {
     display: none !important;
   }
 }

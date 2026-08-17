@@ -142,16 +142,14 @@
   white-space: nowrap;
 }
 
-.anim-card__status--saved {
+.anim-card__status--selected {
   color: var(--color-success);
   background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
   border-color: color-mix(in srgb, var(--color-success) 28%, var(--color-border));
 }
 
-.anim-card__status--draft {
-  color: #8a6500;
-  background: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
-  border-color: color-mix(in srgb, var(--color-warning) 32%, var(--color-border));
+.anim-card__status--disabled {
+  opacity: 0.7;
 }
 
 .anim-card__tags {
@@ -243,6 +241,14 @@
 
 .anim-card__action--quiet {
   color: var(--color-text-muted);
+}
+
+.anim-card__action:disabled {
+  border-color: var(--color-border);
+  background: var(--color-surface-alt);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .anim-card__replay {
